@@ -12,9 +12,15 @@ class UploadVideo(BaseModel):
     # tags: list[str] = Field(default=None, max_items=3)
 
 
-class GetVideo(BaseModel):
+class GetListVideo(UploadVideo):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class GetVideo(GetListVideo):
     user: User
-    video: UploadVideo
 
 
 class Message(BaseModel):
