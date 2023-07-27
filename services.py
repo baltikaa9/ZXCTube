@@ -1,3 +1,4 @@
+import os
 import shutil
 from pathlib import Path
 from typing import NewType, Type, IO, Generator
@@ -10,6 +11,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
+from crud.crud_user import CRUDUser
+from crud.crud_video import CRUDVideo
 from models import UserDB, VideoDB
 from schemas import UploadVideo, GetListVideo
 
@@ -19,10 +22,11 @@ VideoInfo = NewType('VideoInfo', dict)
 async def save_video(
         user_id: int,
         file: UploadFile,
-        title: str, description: str,
+        title: str,
+        description: str | None,
         background_tasks: BackgroundTasks,
         session: AsyncSession
-) -> VideoInfo:
+) -> VideoDB:
     file_name = _generate_file_name(user_id, file.content_type.split("/")[1])
     if file.content_type == 'video/mp4':
         # background_tasks.add_task(write_video, path=file_name, video=file)
@@ -31,16 +35,26 @@ async def save_video(
         raise HTTPException(status_code=418, detail='It isn\'t mp4')
 
     video = UploadVideo(title=title, description=description)
-    new_video = VideoDB(
-        title=video.title,
-        description=video.description,
-        file=file_name,
-        user=user_id,
-    )
+    crud_video = CRUDVideo(VideoDB, session)
+    video = await crud_video.create(video, file_name, user_id)
+    # return VideoInfo({'file_name': file_name, 'user': user_id, 'info': video})
+    return video
 
-    session.add(new_video)
-    await session.commit()
-    return VideoInfo({'file_name': file_name, 'user': user_id, 'info': video})
+
+async def delete_video(video_id, session: AsyncSession) -> Type[VideoDB]:
+    crud_video = CRUDVideo(VideoDB, session)
+    video = await crud_video.delete(video_id)
+    if not video:
+        raise HTTPException(status_code=404, detail='Video not found')
+    file_name = video.file
+    os.remove(file_name)
+    # while True:
+    #     try:
+    #
+    #         break
+    #     except PermissionError:
+    #         ...
+    return video
 
 
 def _generate_file_name(user_id: int, file_format: str):
@@ -48,18 +62,20 @@ def _generate_file_name(user_id: int, file_format: str):
 
 
 async def get_video(video_id: int, session: AsyncSession) -> Type[VideoDB] | None:
-    video = await session.get(VideoDB, video_id)  # TODO: VideoCRUD
+    crud_video = CRUDVideo(VideoDB, session)
+    video = await crud_video.get(video_id)
     return video
 
 
 async def get_videos_by_user(user_id: int, session: AsyncSession) -> list[GetListVideo]:
-    query = select(VideoDB).where(VideoDB.user == user_id)
-    videos = await session.execute(query)
-    return [GetListVideo.model_validate(video[0]) for video in videos.all()]
+    crud_video = CRUDVideo(VideoDB, session)
+    videos = await crud_video.get_by_user(user_id)
+    return [GetListVideo.model_validate(video) for video in videos]
 
 
 async def get_user(user_id: int, session: AsyncSession) -> Type[UserDB] | None:
-    user = await session.get(UserDB, user_id)  # TODO: UserCRUD
+    crud_user = CRUDUser(session)
+    user = await crud_user.get(user_id)
     return user
 
 

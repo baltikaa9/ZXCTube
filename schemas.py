@@ -5,10 +5,13 @@ class User(BaseModel):
     id: int
     username: str
 
+    class Config:
+        from_attributes = True
+
 
 class UploadVideo(BaseModel):
     title: str
-    description: str
+    description: str | None
     # tags: list[str] = Field(default=None, max_items=3)
 
 

@@ -1,12 +1,12 @@
 from fastapi import APIRouter, UploadFile, Form, File, Depends, HTTPException, BackgroundTasks, Request
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
 import services
 from db import get_session
-from schemas import Message
+from schemas import Message, GetVideo, User
 
 router = APIRouter()
 
@@ -18,15 +18,17 @@ templates = Jinja2Templates(directory='templates')
 async def create_video(
         background_tasks: BackgroundTasks,
         title: str = Form(),
-        description: str = Form(),
+        description: str | None = Form(default=None),
         file: UploadFile = File(),
         session: AsyncSession = Depends(get_session),
-) -> services.VideoInfo:
+) -> GetVideo:
     user = await services.get_user(1, session)
     if user is None:
-        raise HTTPException(status_code=403, detail='User not found')
+        raise HTTPException(status_code=403, detail='User not exists')
 
-    return await services.save_video(user.id, file, title, description, background_tasks, session)
+    video = await services.save_video(user.id, file, title, description, background_tasks, session)
+    video.user = User.model_validate(user)
+    return GetVideo.model_validate(video)
 
 
 @router.get('/{video_id}', responses={404: {'model': Message}})
@@ -58,7 +60,20 @@ async def get_video(
         session: AsyncSession = Depends(get_session)
 ):
     video = await services.get_video(video_id, session)
+    if not video:
+        return RedirectResponse('http://localhost:8000/404')
     return templates.TemplateResponse('index.html', {'request': request, 'path': video_id, 'video': video})
+
+
+@router.delete('/{video_id}')
+async def delete_video(
+        video_id: int,
+        session: AsyncSession = Depends(get_session)
+) -> GetVideo:
+    user = await services.get_user(1, session)
+    video = await services.delete_video(video_id, session)
+    video.user = User.model_validate(user)
+    return GetVideo.model_validate(video)
 
 
 @router.get('/test')

@@ -19,7 +19,9 @@
     <source src="http://localhost:8000/video/{{path}}" type="video/mp4">
   </video>
   <h1 style="text-align: center">{{video.title}}</h1>
-  <h2 style="text-align: center">{{video.description}}</h2>
+  {% if video.description %}
+    <h2 style="text-align: center">{{video.description}}</h2>
+  {% endif %}
 
   <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
 </body>
