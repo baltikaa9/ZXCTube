@@ -21,6 +21,9 @@ class UserRead(schemas.BaseUser[uuid.UUID]):
 class UserCreate(schemas.BaseUserCreate):
     username: str
 
+    class Config:
+        from_attributes = True
+
 
 class UserUpdate(UserRead, schemas.BaseUserUpdate):
     ...
