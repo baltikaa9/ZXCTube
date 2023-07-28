@@ -6,15 +6,18 @@ from uuid import uuid4, UUID
 
 import aiofiles
 
-from fastapi import UploadFile, BackgroundTasks, HTTPException
+from fastapi import UploadFile, BackgroundTasks, HTTPException, Depends
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
 from crud.crud_user import CRUDUser
 from crud.crud_video import CRUDVideo
-from models import UserDB
+from db.session import get_session
+from models import UserDB, FollowerDB
 from models import VideoDB
-from schemas import UploadVideo, GetListVideo
+from schemas import UploadVideo, GetListVideo, UserRead
+from schemas.follower import FollowerList
 
 VideoInfo = NewType('VideoInfo', dict)
 
@@ -67,7 +70,7 @@ async def get_video(video_id: int, session: AsyncSession) -> Type[VideoDB] | Non
     return video
 
 
-async def get_videos_by_user(user_id: int, session: AsyncSession) -> list[GetListVideo]:
+async def get_videos_by_user(user_id: UUID, session: AsyncSession) -> list[GetListVideo]:
     crud_video = CRUDVideo(VideoDB, session)
     videos = await crud_video.get_by_user(user_id)
     return [GetListVideo.model_validate(video) for video in videos]
@@ -140,3 +143,17 @@ async def open_file(video_id: int, request: Request, session: AsyncSession):
         headers['Content-Range'] = f'bytes {range_start}-{range_end}/{file_size}'
 
     return file, status_code, content_length, headers
+
+
+async def get_followers_by_user(
+    user: UUID,
+    session: AsyncSession = Depends(get_session),
+) -> FollowerList:
+    query = select(FollowerDB).where(FollowerDB.user == user)
+    followers = await session.execute(query)
+    followers = followers.scalars().all()
+    follower_list = FollowerList(user=await session.get(UserDB, user), followers=[])
+    for follower in followers:
+        subscriber = await session.get(UserDB, follower.subscriber)
+        follower_list.followers.append(UserRead.model_validate(subscriber))
+    return follower_list

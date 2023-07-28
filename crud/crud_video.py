@@ -1,4 +1,5 @@
 from typing import Type
+from uuid import UUID
 
 from sqlalchemy import select, delete
 from sqlalchemy.exc import NoResultFound
@@ -28,7 +29,7 @@ class CRUDVideo:
         video = await self.session.get(self.model, video_id)
         return video
 
-    async def get_by_user(self, user_id: int) -> list[VideoDB]:
+    async def get_by_user(self, user_id: UUID) -> list[VideoDB]:
         query = select(self.model).where(self.model.user == user_id)
         videos = await self.session.execute(query)
         return [video[0] for video in videos.all()]

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from schemas.user import UserRead
+from schemas import UserRead
 
 
 class UploadVideo(BaseModel):
