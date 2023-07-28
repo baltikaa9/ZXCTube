@@ -46,4 +46,4 @@ async def unsubscribe(
 ) -> SubscriberCreate:
     return user
 
-# TODO: unfollow, список на кого подписан
+# TODO: unfollow
