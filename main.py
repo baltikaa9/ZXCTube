@@ -2,8 +2,8 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.requests import Request
 
-from routers import user, video
-from routers.video import templates
+from endpoints import user, video
+from endpoints.video import templates
 
 app = FastAPI()
 

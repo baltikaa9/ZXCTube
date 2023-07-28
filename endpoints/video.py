@@ -5,8 +5,11 @@ from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
 import services
-from db import get_session
-from schemas import Message, GetVideo, User
+from db.session import get_session
+from schemas.message import Message
+from schemas.user import User
+from schemas.video import GetVideo
+
 
 router = APIRouter()
 

@@ -2,7 +2,7 @@ from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import UserDB
+from models.user import UserDB
 
 
 class CRUDUser:

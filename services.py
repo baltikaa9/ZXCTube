@@ -7,14 +7,14 @@ from uuid import uuid4
 import aiofiles
 
 from fastapi import UploadFile, BackgroundTasks, HTTPException
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
 from crud.crud_user import CRUDUser
 from crud.crud_video import CRUDVideo
-from models import UserDB, VideoDB
-from schemas import UploadVideo, GetListVideo
+from models.user import UserDB
+from models.video import VideoDB
+from schemas.video import UploadVideo, GetListVideo
 
 VideoInfo = NewType('VideoInfo', dict)
 

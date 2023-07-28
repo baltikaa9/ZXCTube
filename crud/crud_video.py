@@ -4,8 +4,8 @@ from sqlalchemy import select, delete
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import VideoDB
-from schemas import UploadVideo
+from models.video import VideoDB
+from schemas.video import UploadVideo
 
 
 class CRUDVideo:

@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db import get_session
 import services
-from schemas import GetListVideo
+from db.session import get_session
+from schemas.video import GetListVideo
 
 router = APIRouter()
 

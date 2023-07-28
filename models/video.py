@@ -1,19 +1,10 @@
 import datetime
 
-from sqlalchemy import String, ForeignKey
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column
 
-
-class Base(DeclarativeBase):
-    ...
-
-
-class UserDB(Base):
-    __tablename__ = 'users'
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(nullable=False)
-    videos: Mapped[list['VideoDB']] = relationship()
+from db.base import Base
+from models.user import UserDB
 
 
 class VideoDB(Base):

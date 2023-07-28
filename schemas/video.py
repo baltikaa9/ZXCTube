@@ -1,12 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-
-class User(BaseModel):
-    id: int
-    username: str
-
-    class Config:
-        from_attributes = True
+from .user import User
 
 
 class UploadVideo(BaseModel):
@@ -24,7 +18,3 @@ class GetListVideo(UploadVideo):
 
 class GetVideo(GetListVideo):
     user: User
-
-
-class Message(BaseModel):
-    message: str
