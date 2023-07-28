@@ -14,10 +14,10 @@ from starlette.requests import Request
 from crud.crud_user import CRUDUser
 from crud.crud_video import CRUDVideo
 from db.session import get_session
-from models import UserDB, FollowerDB
+from models import UserDB, SubscriptionDB
 from models import VideoDB
 from schemas import UploadVideo, GetListVideo, UserRead
-from schemas.follower import FollowerList
+from schemas.subscription import SubscriberList, SubscriptionList
 
 VideoInfo = NewType('VideoInfo', dict)
 
@@ -145,15 +145,29 @@ async def open_file(video_id: int, request: Request, session: AsyncSession):
     return file, status_code, content_length, headers
 
 
-async def get_followers_by_user(
+async def get_subscribers_by_user(
     user: UUID,
     session: AsyncSession = Depends(get_session),
-) -> FollowerList:
-    query = select(FollowerDB).where(FollowerDB.user == user)
-    followers = await session.execute(query)
-    followers = followers.scalars().all()
-    follower_list = FollowerList(user=await session.get(UserDB, user), followers=[])
-    for follower in followers:
-        subscriber = await session.get(UserDB, follower.subscriber)
-        follower_list.followers.append(UserRead.model_validate(subscriber))
+) -> SubscriberList:
+    query = select(SubscriptionDB).where(SubscriptionDB.user == user)
+    subscribers = await session.execute(query)
+    subscribers = subscribers.scalars().all()
+    follower_list = SubscriberList(user=await session.get(UserDB, user), subscribers=[])
+    for subscriber in subscribers:
+        subscriber = await session.get(UserDB, subscriber.subscriber)
+        follower_list.subscribers.append(UserRead.model_validate(subscriber))
     return follower_list
+
+
+async def get_user_subscriptions(
+    user: UUID,
+    session: AsyncSession = Depends(get_session),
+) -> SubscriptionList:
+    query = select(SubscriptionDB).where(SubscriptionDB.subscriber == user)
+    subscriptions = await session.execute(query)
+    subscriptions = subscriptions.scalars().all()
+    subscription_list = SubscriptionList(user=await session.get(UserDB, user), subscriptions=[])
+    for subscription in subscriptions:
+        user = await session.get(UserDB, subscription.user)
+        subscription_list.subscriptions.append(UserRead.model_validate(user))
+    return subscription_list

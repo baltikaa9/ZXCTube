@@ -7,8 +7,8 @@ from db.base import Base
 from models import UserDB
 
 
-class FollowerDB(Base):
-    __tablename__ = 'followers'
+class SubscriptionDB(Base):
+    __tablename__ = 'subscriptions'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user: Mapped[UUID] = mapped_column(ForeignKey(UserDB.id))
