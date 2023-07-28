@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 import services
 from db.session import get_session
-from schemas.video import GetListVideo
+from schemas import GetListVideo
 
 router = APIRouter()
 

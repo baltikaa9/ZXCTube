@@ -1,4 +1,5 @@
 from typing import Type
+from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,6 +14,6 @@ class CRUDUser:
     async def create(self):
         ...
 
-    async def get(self, user_id: int) -> Type[UserDB] | None:
+    async def get(self, user_id: UUID) -> Type[UserDB] | None:
         user = await self.session.get(UserDB, user_id)
         return user

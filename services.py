@@ -2,7 +2,7 @@ import os
 import shutil
 from pathlib import Path
 from typing import NewType, Type, IO, Generator
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 import aiofiles
 
@@ -12,15 +12,15 @@ from starlette.requests import Request
 
 from crud.crud_user import CRUDUser
 from crud.crud_video import CRUDVideo
-from models.user import UserDB
-from models.video import VideoDB
-from schemas.video import UploadVideo, GetListVideo
+from models import UserDB
+from models import VideoDB
+from schemas import UploadVideo, GetListVideo
 
 VideoInfo = NewType('VideoInfo', dict)
 
 
 async def save_video(
-        user_id: int,
+        user_id: int | UUID,
         file: UploadFile,
         title: str,
         description: str | None,
@@ -73,7 +73,7 @@ async def get_videos_by_user(user_id: int, session: AsyncSession) -> list[GetLis
     return [GetListVideo.model_validate(video) for video in videos]
 
 
-async def get_user(user_id: int, session: AsyncSession) -> Type[UserDB] | None:
+async def get_user(user_id: UUID, session: AsyncSession) -> Type[UserDB] | None:
     crud_user = CRUDUser(session)
     user = await crud_user.get(user_id)
     return user

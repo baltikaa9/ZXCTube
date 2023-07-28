@@ -6,9 +6,9 @@ from starlette.templating import Jinja2Templates
 
 import services
 from db.session import get_session
-from schemas.message import Message
-from schemas.user import User
-from schemas.video import GetVideo
+from schemas import Message
+from schemas import UserRead
+from schemas import GetVideo
 
 
 router = APIRouter()
@@ -25,12 +25,12 @@ async def create_video(
         file: UploadFile = File(),
         session: AsyncSession = Depends(get_session),
 ) -> GetVideo:
-    user = await services.get_user(1, session)
+    user = await services.get_user('15fde21d-e61d-4469-a1aa-1350c2a39ca7', session)
     if user is None:
         raise HTTPException(status_code=403, detail='User not exists')
 
     video = await services.save_video(user.id, file, title, description, background_tasks, session)
-    video.user = User.model_validate(user)
+    video.user = UserRead.model_validate(user)
     return GetVideo.model_validate(video)
 
 
@@ -73,9 +73,9 @@ async def delete_video(
         video_id: int,
         session: AsyncSession = Depends(get_session)
 ) -> GetVideo:
-    user = await services.get_user(1, session)
+    user = await services.get_user('15fde21d-e61d-4469-a1aa-1350c2a39ca7', session)
     video = await services.delete_video(video_id, session)
-    video.user = User.model_validate(user)
+    video.user = UserRead.model_validate(user)
     return GetVideo.model_validate(video)
 
 
