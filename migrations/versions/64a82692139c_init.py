@@ -24,7 +24,7 @@ def upgrade() -> None:
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('file', sa.String(), nullable=False),
     sa.Column('create_at', sa.DateTime(), nullable=False),
-    sa.Column('user', sa.Integer(), nullable=False),
+    sa.Column('user', sa.UUID(), nullable=False),
     sa.ForeignKeyConstraint(['user'], ['users.id'], ondelete='restrict'),
     sa.PrimaryKeyConstraint('id')
     )
