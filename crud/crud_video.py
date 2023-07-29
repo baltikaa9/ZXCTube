@@ -1,9 +1,6 @@
-from typing import Type, Any
 from uuid import UUID
 
-from sqlalchemy import select, delete
-from sqlalchemy.exc import NoResultFound
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from crud import CRUDBase
 from models import VideoDB

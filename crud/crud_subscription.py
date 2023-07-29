@@ -1,8 +1,7 @@
-from typing import Type, cast
+from typing import cast
 from uuid import UUID
 
 from sqlalchemy import delete, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud import CRUDBase
 from models import SubscriptionDB
