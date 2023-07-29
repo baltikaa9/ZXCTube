@@ -69,7 +69,8 @@ async def get_video(
 ):
     video = await services.get_video(video_id, session)
     if not video:
-        return RedirectResponse('http://localhost:8000/video/not_found')
+        # return RedirectResponse('http://localhost:8000/video/not_found')
+        return RedirectResponse('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
     return templates.TemplateResponse('index.html', {'request': request, 'path': video_id, 'video': video})
 
 
