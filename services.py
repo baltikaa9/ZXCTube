@@ -1,7 +1,7 @@
 import os
 import shutil
 from pathlib import Path
-from typing import NewType, Type, IO, Generator
+from typing import Type, IO, Generator
 from uuid import uuid4, UUID
 
 import aiofiles
@@ -15,10 +15,8 @@ from crud import CRUDVideo
 from dependencies import get_session
 from models import UserDB, SubscriptionDB
 from models import VideoDB
-from schemas import UploadVideo, GetListVideo, UserRead, GetVideo
 from schemas import SubscriberList, SubscriptionList, SubscriberCreate
-
-VideoInfo = NewType('VideoInfo', dict)
+from schemas import UploadVideo, GetListVideo, UserRead, GetVideo
 
 
 async def save_video(
@@ -36,9 +34,9 @@ async def save_video(
     else:
         raise HTTPException(status_code=418, detail='It isn\'t mp4')
 
-    video = UploadVideo(title=title, description=description)
+    video = UploadVideo(title=title, description=description, file=file_name, user=user.id)
     crud_video = CRUDVideo(VideoDB, session)
-    video = await crud_video.create(video, file_name, user.id)
+    video = await crud_video.create(video)
     video.user = UserRead.model_validate(user)
     return GetVideo.model_validate(video)
 
@@ -77,7 +75,7 @@ async def get_videos_by_user(user_id: UUID, session: AsyncSession) -> list[GetLi
 
 
 async def get_user(user_id: UUID, session: AsyncSession) -> Type[UserDB] | None:
-    crud_user = CRUDUser(session)
+    crud_user = CRUDUser(UserDB, session)
     user = await crud_user.get(user_id)
     return user
 
@@ -150,7 +148,7 @@ async def create_subscription(
         subscriber: UUID,
         session: AsyncSession,
 ) -> SubscriberCreate:
-    crud_user = CRUDUser(session)
+    crud_user = CRUDUser(UserDB, session)
     user_for_follow_db = await crud_user.get(user)
     subscriber_db = await crud_user.get(subscriber)
     if not user_for_follow_db:
@@ -172,7 +170,7 @@ async def delete_subscription(
         subscriber: UUID,
         session: AsyncSession,
 ) -> SubscriberCreate:
-    crud_user = CRUDUser(session)
+    crud_user = CRUDUser(UserDB, session)
     user_for_unfollow_db = await crud_user.get(user)
     subscriber_db = await crud_user.get(subscriber)
     if not user_for_unfollow_db:
@@ -192,7 +190,7 @@ async def get_user_subscribers(
     user: UUID,
     session: AsyncSession = Depends(get_session),
 ) -> SubscriberList:
-    crud_user = CRUDUser(session)
+    crud_user = CRUDUser(UserDB, session)
     user_db = await crud_user.get(user)
     crud_subscription = CRUDSubscription(SubscriptionDB, session)
     subscribers = await crud_subscription.get_user_subscribers(user)
@@ -207,7 +205,7 @@ async def get_user_subscriptions(
     user: UUID,
     session: AsyncSession = Depends(get_session),
 ) -> SubscriptionList:
-    crud_user = CRUDUser(session)
+    crud_user = CRUDUser(UserDB, session)
     user_db = await crud_user.get(user)
     crud_subscription = CRUDSubscription(SubscriptionDB, session)
     subscriptions = await crud_subscription.get_user_subscriptions(user)
@@ -216,3 +214,10 @@ async def get_user_subscriptions(
         user = await crud_user.get(subscription.user)
         subscription_list.subscriptions.append(UserRead.model_validate(user))
     return subscription_list
+
+
+async def delete_user(user_id: UUID, current_user: UserDB, session: AsyncSession) -> UserRead:
+    crud_user = CRUDUser(UserDB, session)
+    user = await crud_user.delete(user_id)
+    return UserRead.model_validate(user)
+

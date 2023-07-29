@@ -82,6 +82,16 @@ router.include_router(
     tags=["auth"],
 )
 
+
+@router.delete('/{user_id}')
+async def delete_user(
+        user_id: UUID,
+        session: AsyncSession = Depends(get_session),
+        current_user: UserDB = Depends(current_active_user),
+) -> UserRead:
+    user = await services.delete_user(user_id, current_user, session)
+    return user
+
 # router.include_router(
 #     fastapi_users.get_reset_password_router(),
 #     prefix="/auth",

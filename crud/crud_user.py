@@ -1,16 +1,7 @@
-from typing import Type
-from uuid import UUID
-
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from crud import CRUDBase
 from models import UserDB
+from schemas import UserCreate
 
 
-class CRUDUser:
-    def __init__(self, model: Type[UserDB], session: AsyncSession):
-        self.model = model
-        self.session = session
-
-    async def get(self, user_id: UUID) -> Type[UserDB] | None:
-        user = await self.session.get(self.model, user_id)
-        return user
+class CRUDUser(CRUDBase[UserDB, UserCreate]):
+    ...
