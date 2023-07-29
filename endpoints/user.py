@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import services
-from auth.user_manager import fastapi_users, auth_backend, current_active_user
-from db import get_session
+from auth import auth_backend
+from dependencies import get_session, current_active_user, _fastapi_users
 from models import UserDB
 from schemas import GetListVideo, UserRead, UserCreate
 from schemas import SubscriberList, SubscriptionList
@@ -73,11 +73,11 @@ async def get_subscriptions(
 
 
 router.include_router(
-    fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
+    _fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
 )
 
 router.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
+    _fastapi_users.get_register_router(UserRead, UserCreate),
     prefix="/auth",
     tags=["auth"],
 )

@@ -3,8 +3,8 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.user_manager import current_active_user
-from db import get_session
+from dependencies import current_active_user
+from dependencies import get_session
 from models import UserDB
 from schemas import SubscriberCreate
 from services import create_subscription, delete_subscription

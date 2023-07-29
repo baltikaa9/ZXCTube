@@ -1,3 +1,3 @@
-from .user import UserDB, get_user_db
+from .user import UserDB
 from .video import VideoDB
 from .subscription import SubscriptionDB

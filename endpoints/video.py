@@ -1,19 +1,17 @@
 from typing import Annotated
 
-from fastapi import APIRouter, UploadFile, Form, File, Depends, HTTPException, BackgroundTasks, Request
+from fastapi import APIRouter, UploadFile, Form, File, Depends, BackgroundTasks, Request
 from fastapi.responses import StreamingResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
 import services
-from auth.user_manager import current_active_user
-from db import get_session
+from dependencies import current_active_user
+from dependencies import get_session
 from models import UserDB
-from schemas import Message
-from schemas import UserRead
 from schemas import GetVideo
-
+from schemas import Message
 
 router = APIRouter()
 

@@ -12,7 +12,7 @@ from starlette.requests import Request
 from crud import CRUDSubscription
 from crud import CRUDUser
 from crud import CRUDVideo
-from db import get_session
+from dependencies import get_session
 from models import UserDB, SubscriptionDB
 from models import VideoDB
 from schemas import UploadVideo, GetListVideo, UserRead, GetVideo
