@@ -34,6 +34,11 @@ async def create_video(
     return video
 
 
+@router.get('/not_found')
+async def video_not_found(request: Request):
+    return templates.TemplateResponse('404.html', {'request': request})
+
+
 @router.get('/{video_id}', responses={404: {'model': Message}})
 async def get_video(
         video_id: int,
@@ -64,7 +69,7 @@ async def get_video(
 ):
     video = await services.get_video(video_id, session)
     if not video:
-        return RedirectResponse('http://localhost:8000/404')
+        return RedirectResponse('http://localhost:8000/video/not_found')
     return templates.TemplateResponse('index.html', {'request': request, 'path': video_id, 'video': video})
 
 
