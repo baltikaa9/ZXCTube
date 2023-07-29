@@ -5,8 +5,8 @@ from sqlalchemy import select, delete
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.video import VideoDB
-from schemas.video import UploadVideo
+from models import VideoDB
+from schemas import UploadVideo
 
 
 class CRUDVideo:
@@ -14,7 +14,7 @@ class CRUDVideo:
         self.model = model
         self.session = session
 
-    async def create(self, video: UploadVideo, file_name: str, user_id: int) -> VideoDB:
+    async def create(self, video: UploadVideo, file_name: str, user_id: UUID) -> VideoDB:
         new_video = self.model(
             title=video.title,
             description=video.description,

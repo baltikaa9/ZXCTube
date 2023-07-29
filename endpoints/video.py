@@ -8,7 +8,7 @@ from starlette.templating import Jinja2Templates
 
 import services
 from auth.user_manager import current_active_user
-from db.session import get_session
+from db import get_session
 from models import UserDB
 from schemas import Message
 from schemas import UserRead
@@ -30,13 +30,8 @@ async def create_video(
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(current_active_user),
 ) -> GetVideo:
-    # user = await services.get_user('15fde21d-e61d-4469-a1aa-1350c2a39ca7', session)
-    # if user is None:
-    #     raise HTTPException(status_code=403, detail='User not exists')
-
-    video = await services.save_video(current_user.id, file, title, description, background_tasks, session)
-    video.user = UserRead.model_validate(current_user)
-    return GetVideo.model_validate(video)
+    video = await services.save_video(current_user, file, title, description, background_tasks, session)
+    return video
 
 
 @router.get('/{video_id}', responses={404: {'model': Message}})
@@ -76,12 +71,11 @@ async def get_video(
 @router.delete('/{video_id}')
 async def delete_video(
         video_id: int,
-        session: AsyncSession = Depends(get_session)
+        session: AsyncSession = Depends(get_session),
+        current_user: UserDB = Depends(current_active_user),
 ) -> GetVideo:
-    user = await services.get_user('15fde21d-e61d-4469-a1aa-1350c2a39ca7', session)
-    video = await services.delete_video(video_id, session)
-    video.user = UserRead.model_validate(user)
-    return GetVideo.model_validate(video)
+    video = await services.delete_video(video_id, current_user, session)
+    return video
 
 
 @router.get('/test')

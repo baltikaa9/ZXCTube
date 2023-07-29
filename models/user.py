@@ -3,8 +3,8 @@ from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase, SQLAlchemyBaseUs
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from db.base import Base
-from db.session import get_session
+from db import Base
+from db import get_session
 
 
 class UserDB(SQLAlchemyBaseUserTableUUID, Base):

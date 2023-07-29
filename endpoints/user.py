@@ -5,10 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 import services
 from auth.user_manager import fastapi_users, auth_backend, current_active_user
-from db.session import get_session
+from db import get_session
 from models import UserDB
-from schemas import GetListVideo, UserRead, UserCreate, UserUpdate
-from schemas.subscription import SubscriberList, SubscriptionList
+from schemas import GetListVideo, UserRead, UserCreate
+from schemas import SubscriberList, SubscriptionList
 
 router = APIRouter()
 
@@ -20,6 +20,14 @@ async def get_me(
     return UserRead.model_validate(current_user)
 
 
+@router.get('/me/videos')
+async def get_my_videos(
+        session: AsyncSession = Depends(get_session),
+        current_user: UserDB = Depends(current_active_user),
+) -> list[GetListVideo]:
+    return await services.get_videos_by_user(current_user.id, session)
+
+
 @router.get('/{user_id}/videos')
 async def get_user_videos(
         user_id: UUID,
@@ -29,16 +37,16 @@ async def get_user_videos(
 
 
 @router.get('/me/subscribers')
-async def get_my_followers(
+async def get_my_subscribers(
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(current_active_user),
 ) -> SubscriberList:
-    followers = await services.get_subscribers_by_user(current_user.id, session)
+    followers = await services.get_user_subscribers(current_user.id, session)
     return followers
 
 
 @router.get('/me/subscriptions')
-async def get_my_followers(
+async def get_my_subscriptions(
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(current_active_user),
 ) -> SubscriptionList:
@@ -51,7 +59,7 @@ async def get_subscribers(
         user: UUID,
         session: AsyncSession = Depends(get_session),
 ) -> SubscriberList:
-    subscribers = await services.get_subscribers_by_user(user, session)
+    subscribers = await services.get_user_subscribers(user, session)
     return subscribers
 
 
