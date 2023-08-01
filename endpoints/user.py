@@ -2,7 +2,8 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from starlette.requests import Request
+from starlette.templating import Jinja2Templates
 
 from auth import auth_backend
 from dependencies import get_session, current_active_user, _fastapi_users
@@ -79,15 +80,15 @@ async def get_subscriptions(
     return subscriptions
 
 
-router.include_router(
-    _fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
-)
-
-router.include_router(
-    _fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
-    tags=["auth"],
-)
+# router.include_router(
+#     _fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
+# )
+#
+# router.include_router(
+#     _fastapi_users.get_register_router(UserRead, UserCreate),
+#     prefix="/auth",
+#     tags=["auth"],
+# )
 
 
 @router.delete('/{user_id}', dependencies=[Depends(current_active_user)])

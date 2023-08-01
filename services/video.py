@@ -64,10 +64,12 @@ class VideoService:
         return GetVideo.model_validate(video)
 
     @staticmethod
-    async def get_video(video_id: int, session: AsyncSession) -> Type[VideoDB] | None:
+    async def get_video(video_id: int, session: AsyncSession) -> GetVideo:
         crud_video = CRUDVideo(VideoDB, session)
         video = await crud_video.get(video_id)
-        return video
+        if not video:
+            raise VideoNotFoundException()
+        return GetVideo.model_validate(video)
 
     @staticmethod
     async def get_videos_by_user(user_id: UUID, session: AsyncSession) -> list[GetVideo]:
@@ -100,8 +102,6 @@ class VideoService:
 
     async def open_file(self, video_id: int, request: Request, session: AsyncSession):
         video = await self.get_video(video_id, session)
-        if not video:
-            raise VideoNotFoundException
 
         path = Path(video.file)
         file = path.open('rb')
@@ -131,7 +131,7 @@ class VideoService:
             video_id: int,
             session: AsyncSession,
             current_user: UserDB,
-    ) -> VideoDB | None:
+    ) -> GetVideo:
         crud_video = CRUDVideo(VideoDB, session)
         crud_like = CRUDVideoLike(VideoLikeDB, session)
         like = CreateLikeOnVideo(video=video_id, user=current_user.id)
@@ -146,4 +146,4 @@ class VideoService:
             if not video:
                 raise VideoNotFoundException()
             await crud_like.create(like)
-        return video
+        return GetVideo.model_validate(video)

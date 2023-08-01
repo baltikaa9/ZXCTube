@@ -75,7 +75,10 @@ async def get_video(
         # return RedirectResponse('http://localhost:8000/video/not_found')
         return RedirectResponse('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
     user = await user_service.get_user(video.user, session)
-    return templates.TemplateResponse('index.html', {'request': request, 'path': video_id, 'video': video, 'user': user})
+    return templates.TemplateResponse(
+        'index.html',
+        {'request': request, 'path': video_id, 'video': video, 'user': user}
+    )
 
 
 @router.delete('/{video_id}')
