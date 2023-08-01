@@ -3,12 +3,13 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-import services
+
 from auth import auth_backend
 from dependencies import get_session, current_active_user, _fastapi_users
 from models import UserDB
 from schemas import GetListVideo, UserRead, UserCreate
 from schemas import SubscriberList, SubscriptionList
+from services import UserService, VideoService, SubscriptionService
 
 router = APIRouter()
 
@@ -24,24 +25,27 @@ async def get_me(
 async def get_my_videos(
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(current_active_user),
+        service: VideoService = Depends()
 ) -> list[GetListVideo]:
-    return await services.get_videos_by_user(current_user.id, session)
+    return await service.get_videos_by_user(current_user.id, session)
 
 
 @router.get('/{user_id}/videos')
 async def get_user_videos(
         user_id: UUID,
-        session: AsyncSession = Depends(get_session)
+        session: AsyncSession = Depends(get_session),
+        service: VideoService = Depends()
 ) -> list[GetListVideo]:
-    return await services.get_videos_by_user(user_id, session)
+    return await service.get_videos_by_user(user_id, session)
 
 
 @router.get('/me/subscribers')
 async def get_my_subscribers(
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(current_active_user),
+        service: SubscriptionService = Depends()
 ) -> SubscriberList:
-    followers = await services.get_user_subscribers(current_user.id, session)
+    followers = await service.get_user_subscribers(current_user.id, session)
     return followers
 
 
@@ -49,8 +53,9 @@ async def get_my_subscribers(
 async def get_my_subscriptions(
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(current_active_user),
+        service: SubscriptionService = Depends()
 ) -> SubscriptionList:
-    subscriptions = await services.get_user_subscriptions(current_user.id, session)
+    subscriptions = await service.get_user_subscriptions(current_user.id, session)
     return subscriptions
 
 
@@ -58,8 +63,9 @@ async def get_my_subscriptions(
 async def get_subscribers(
         user: UUID,
         session: AsyncSession = Depends(get_session),
+        service: SubscriptionService = Depends()
 ) -> SubscriberList:
-    subscribers = await services.get_user_subscribers(user, session)
+    subscribers = await service.get_user_subscribers(user, session)
     return subscribers
 
 
@@ -67,8 +73,9 @@ async def get_subscribers(
 async def get_subscriptions(
         user: UUID,
         session: AsyncSession = Depends(get_session),
+        service: SubscriptionService = Depends()
 ) -> SubscriptionList:
-    subscriptions = await services.get_user_subscriptions(user, session)
+    subscriptions = await service.get_user_subscriptions(user, session)
     return subscriptions
 
 
@@ -87,8 +94,9 @@ router.include_router(
 async def delete_user(
         user_id: UUID,
         session: AsyncSession = Depends(get_session),
+        service: UserService = Depends()
 ) -> UserRead:
-    user = await services.delete_user(user_id, session)
+    user = await service.delete_user(user_id, session)
     return user
 
 # router.include_router(

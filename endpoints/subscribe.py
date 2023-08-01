@@ -7,7 +7,7 @@ from dependencies import current_active_user
 from dependencies import get_session
 from models import UserDB
 from schemas import SubscriberCreate
-from services import create_subscription, delete_subscription
+from services import SubscriptionService
 
 router = APIRouter()
 
@@ -17,8 +17,9 @@ async def subscribe(
         user: UUID,
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(current_active_user),
+        service: SubscriptionService = Depends()
 ) -> SubscriberCreate:
-    subscription = await create_subscription(user, current_user.id, session)
+    subscription = await service.create_subscription(user, current_user.id, session)
     return subscription
 
 
@@ -27,6 +28,7 @@ async def unsubscribe(
         user: UUID,
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(current_active_user),
+        service: SubscriptionService = Depends()
 ) -> SubscriberCreate:
-    subscription = await delete_subscription(user, current_user.id, session)
+    subscription = await service.delete_subscription(user, current_user.id, session)
     return subscription

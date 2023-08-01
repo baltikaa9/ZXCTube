@@ -6,12 +6,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
-import services
+
 from dependencies import current_active_user
 from dependencies import get_session
 from models import UserDB
 from schemas import GetVideo
 from schemas import Message
+# from services.video import save_video, open_file, get_video, delete_video, add_or_delete_like
+from services import VideoService
 
 router = APIRouter()
 
@@ -27,8 +29,9 @@ async def create_video(
         description: Annotated[str | None, Form()] = None,
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(current_active_user),
+        service: VideoService = Depends()
 ) -> GetVideo:
-    video = await services.save_video(current_user, file, title, description, background_tasks, session)
+    video = await service.save_video(current_user, file, title, description, background_tasks, session)
     return video
 
 
@@ -41,9 +44,10 @@ async def video_not_found(request: Request):
 async def get_video(
         video_id: int,
         request: Request,
-        session: AsyncSession = Depends(get_session)
+        session: AsyncSession = Depends(get_session),
+        service: VideoService = Depends(),
 ) -> StreamingResponse:
-    file, status_code, content_length, headers = await services.open_file(video_id, request, session)
+    file, status_code, content_length, headers = await service.open_file(video_id, request, session)
 
     response = StreamingResponse(
         file,
@@ -63,9 +67,10 @@ async def get_video(
 async def get_video(
         video_id: int,
         request: Request,
-        session: AsyncSession = Depends(get_session)
+        session: AsyncSession = Depends(get_session),
+        service: VideoService = Depends()
 ):
-    video = await services.get_video(video_id, session)
+    video = await service.get_video(video_id, session)
     if not video:
         # return RedirectResponse('http://localhost:8000/video/not_found')
         return RedirectResponse('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
@@ -77,14 +82,15 @@ async def delete_video(
         video_id: int,
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(current_active_user),
+        service: VideoService = Depends()
 ) -> GetVideo:
-    video = await services.delete_video(video_id, current_user, session)
+    video = await service.delete_video(video_id, current_user, session)
     return video
 
 
-@router.get('/test')
-async def get_test(request: Request):
-    return request.url
+# @router.get('/test')
+# async def get_test(request: Request):
+#     return request.url
 
 
 @router.post('/{video_id}/like')
@@ -92,6 +98,7 @@ async def like_video(
         video_id: int,
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(current_active_user),
+        service: VideoService = Depends()
 ):
-    video = await services.add_or_delete_like(video_id, session, current_user)
+    video = await service.add_or_delete_like(video_id, session, current_user)
     return video
