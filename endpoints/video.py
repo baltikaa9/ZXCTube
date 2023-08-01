@@ -12,7 +12,7 @@ from dependencies import get_session
 from models import UserDB
 from schemas import GetVideo
 from schemas import Message
-from services import VideoService
+from services import VideoService, UserService
 
 router = APIRouter()
 
@@ -67,13 +67,15 @@ async def get_video(
         video_id: int,
         request: Request,
         session: AsyncSession = Depends(get_session),
-        service: VideoService = Depends()
+        video_service: VideoService = Depends(),
+        user_service: UserService = Depends(),
 ):
-    video = await service.get_video(video_id, session)
+    video = await video_service.get_video(video_id, session)
     if not video:
         # return RedirectResponse('http://localhost:8000/video/not_found')
         return RedirectResponse('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
-    return templates.TemplateResponse('index.html', {'request': request, 'path': video_id, 'video': video})
+    user = await user_service.get_user(video.user, session)
+    return templates.TemplateResponse('index.html', {'request': request, 'path': video_id, 'video': video, 'user': user})
 
 
 @router.delete('/{video_id}')
