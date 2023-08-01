@@ -17,3 +17,12 @@ class VideoDB(Base):
     file: Mapped[str] = mapped_column(nullable=False)
     create_at: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.now())
     user: Mapped[UUID] = mapped_column(ForeignKey(UserDB.id, ondelete='restrict'))
+    like_count: Mapped[int] = mapped_column(default=0)
+
+
+class VideoLikeDB(Base):
+    __tablename__ = 'videos_likes'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    video: Mapped[int] = mapped_column(ForeignKey(VideoDB.id))
+    user: Mapped[UUID] = mapped_column(ForeignKey(UserDB.id))

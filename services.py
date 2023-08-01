@@ -9,13 +9,14 @@ from fastapi import UploadFile, BackgroundTasks, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
-from crud import CRUDSubscription
+from crud import CRUDSubscription, CRUDVideoLike
 from crud import CRUDUser
 from crud import CRUDVideo
 from dependencies import get_session
-from models import UserDB, SubscriptionDB
+from exceptions import VideoNotFoundException, UserNotFoundException
+from models import UserDB, SubscriptionDB, VideoLikeDB
 from models import VideoDB
-from schemas import SubscriberList, SubscriptionList, SubscriberCreate
+from schemas import SubscriberList, SubscriptionList, SubscriberCreate, CreateLikeOnVideo
 from schemas import UploadVideo, GetListVideo, UserRead, GetVideo
 
 
@@ -45,16 +46,10 @@ async def delete_video(video_id, user: UserDB, session: AsyncSession) -> GetVide
     crud_video = CRUDVideo(VideoDB, session)
     video = await crud_video.delete(video_id)
     if not video:
-        raise HTTPException(status_code=404, detail='Video not found')
+        raise VideoNotFoundException()
     video.user = UserRead.model_validate(user)
     file_name = video.file
     os.remove(file_name)
-    # while True:
-    #     try:
-    #
-    #         break
-    #     except PermissionError:
-    #         ...
     return GetVideo.model_validate(video)
 
 
@@ -117,7 +112,7 @@ def ranged(
 async def open_file(video_id: int, request: Request, session: AsyncSession):
     video = await get_video(video_id, session)
     if not video:
-        raise HTTPException(status_code=404, detail='Video not found')
+        raise VideoNotFoundException
 
     path = Path(video.file)
     file = path.open('rb')
@@ -152,7 +147,7 @@ async def create_subscription(
     user_for_follow_db = await crud_user.get(user)
     subscriber_db = await crud_user.get(subscriber)
     if not user_for_follow_db:
-        raise HTTPException(status_code=404, detail='User not found')
+        raise UserNotFoundException()
     elif user_for_follow_db == subscriber_db:
         raise HTTPException(status_code=403, detail='You can\'t subscribe to yourself')
     followers = await get_user_subscribers(user, session)
@@ -174,7 +169,7 @@ async def delete_subscription(
     user_for_unfollow_db = await crud_user.get(user)
     subscriber_db = await crud_user.get(subscriber)
     if not user_for_unfollow_db:
-        raise HTTPException(status_code=404, detail='User not found')
+        raise UserNotFoundException()
     elif user_for_unfollow_db == subscriber_db:
         raise HTTPException(status_code=403, detail='You can\'t unsubscribe to yourself')
 
@@ -216,8 +211,29 @@ async def get_user_subscriptions(
     return subscription_list
 
 
-async def delete_user(user_id: UUID, current_user: UserDB, session: AsyncSession) -> UserRead:
+async def delete_user(user_id: UUID, session: AsyncSession) -> UserRead:
     crud_user = CRUDUser(UserDB, session)
     user = await crud_user.delete(user_id)
     return UserRead.model_validate(user)
 
+
+async def add_or_delete_like(
+        video_id: int,
+        session: AsyncSession,
+        current_user: UserDB,
+) -> VideoDB | None:
+    crud_video = CRUDVideo(VideoDB, session)
+    crud_like = CRUDVideoLike(VideoLikeDB, session)
+    like = CreateLikeOnVideo(video=video_id, user=current_user.id)
+    like_db = await crud_like.get_like(like)
+    if like_db:
+        video = await crud_video.delete_like(video_id)
+        if not video:
+            raise VideoNotFoundException()
+        await crud_like.delete(like_db.id)
+    else:
+        video = await crud_video.add_like(video_id)
+        if not video:
+            raise VideoNotFoundException()
+        await crud_like.create(like)
+    return video

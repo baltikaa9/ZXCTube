@@ -85,3 +85,13 @@ async def delete_video(
 @router.get('/test')
 async def get_test(request: Request):
     return request.url
+
+
+@router.post('/{video_id}/like')
+async def like_video(
+        video_id: int,
+        session: AsyncSession = Depends(get_session),
+        current_user: UserDB = Depends(current_active_user),
+):
+    video = await services.add_or_delete_like(video_id, session, current_user)
+    return video

@@ -83,13 +83,12 @@ router.include_router(
 )
 
 
-@router.delete('/{user_id}')
+@router.delete('/{user_id}', dependencies=[Depends(current_active_user)])
 async def delete_user(
         user_id: UUID,
         session: AsyncSession = Depends(get_session),
-        current_user: UserDB = Depends(current_active_user),
 ) -> UserRead:
-    user = await services.delete_user(user_id, current_user, session)
+    user = await services.delete_user(user_id, session)
     return user
 
 # router.include_router(
