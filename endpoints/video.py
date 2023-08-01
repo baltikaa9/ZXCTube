@@ -12,7 +12,6 @@ from dependencies import get_session
 from models import UserDB
 from schemas import GetVideo
 from schemas import Message
-# from services.video import save_video, open_file, get_video, delete_video, add_or_delete_like
 from services import VideoService
 
 router = APIRouter()
@@ -81,16 +80,10 @@ async def get_video(
 async def delete_video(
         video_id: int,
         session: AsyncSession = Depends(get_session),
-        current_user: UserDB = Depends(current_active_user),
         service: VideoService = Depends()
 ) -> GetVideo:
-    video = await service.delete_video(video_id, current_user, session)
+    video = await service.delete_video(video_id, session)
     return video
-
-
-# @router.get('/test')
-# async def get_test(request: Request):
-#     return request.url
 
 
 @router.post('/{video_id}/like')

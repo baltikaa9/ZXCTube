@@ -13,7 +13,7 @@ from starlette.requests import Request
 from crud import CRUDVideo, CRUDVideoLike
 from exceptions import VideoNotFoundException
 from models import UserDB, VideoDB, VideoLikeDB
-from schemas import GetVideo, UploadVideo, UserRead, GetListVideo, CreateLikeOnVideo
+from schemas import UploadVideo, GetVideo, CreateLikeOnVideo
 
 
 class VideoService:
@@ -36,12 +36,11 @@ class VideoService:
         video = UploadVideo(title=title, description=description, file=file_name, user=user.id)
         crud_video = CRUDVideo(VideoDB, session)
         video = await crud_video.create(video)
-        video.user = UserRead.model_validate(user)
         return GetVideo.model_validate(video)
 
     @staticmethod
     def _generate_file_name(user_id: UUID, file_format: str):
-        return f'media/{user_id}_{uuid4()}.{file_format}'  # _{datetime.datetime.now().strftime("%Y%m%d-%H%M%S")}'
+        return f'media/{user_id}_{uuid4()}.{file_format}'
 
     @staticmethod
     def _write_video(path: str, video: UploadFile):
@@ -55,12 +54,11 @@ class VideoService:
             await file.write(data)
 
     @staticmethod
-    async def delete_video(video_id, user: UserDB, session: AsyncSession) -> GetVideo:
+    async def delete_video(video_id, session: AsyncSession) -> GetVideo:
         crud_video = CRUDVideo(VideoDB, session)
         video = await crud_video.delete(video_id)
         if not video:
             raise VideoNotFoundException()
-        video.user = UserRead.model_validate(user)
         file_name = video.file
         os.remove(file_name)
         return GetVideo.model_validate(video)
@@ -72,10 +70,10 @@ class VideoService:
         return video
 
     @staticmethod
-    async def get_videos_by_user(user_id: UUID, session: AsyncSession) -> list[GetListVideo]:
+    async def get_videos_by_user(user_id: UUID, session: AsyncSession) -> list[GetVideo]:
         crud_video = CRUDVideo(VideoDB, session)
         videos = await crud_video.get_by_user(user_id)
-        return [GetListVideo.model_validate(video) for video in videos]
+        return [GetVideo.model_validate(video) for video in videos]
 
     @staticmethod
     def _ranged(

@@ -2,8 +2,6 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from schemas import UserRead
-
 
 class UploadVideo(BaseModel):
     title: str
@@ -12,16 +10,12 @@ class UploadVideo(BaseModel):
     user: UUID
 
 
-class GetListVideo(UploadVideo):
+class GetVideo(UploadVideo):
     id: int
     like_count: int
 
     class Config:
         from_attributes = True
-
-
-class GetVideo(GetListVideo):
-    user: UserRead
 
 
 class CreateLikeOnVideo(BaseModel):

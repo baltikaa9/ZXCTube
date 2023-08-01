@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from auth import auth_backend
 from dependencies import get_session, current_active_user, _fastapi_users
 from models import UserDB
-from schemas import GetListVideo, UserRead, UserCreate
+from schemas import GetVideo, UserRead, UserCreate
 from schemas import SubscriberList, SubscriptionList
 from services import UserService, VideoService, SubscriptionService
 
@@ -26,7 +26,7 @@ async def get_my_videos(
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(current_active_user),
         service: VideoService = Depends()
-) -> list[GetListVideo]:
+) -> list[GetVideo]:
     return await service.get_videos_by_user(current_user.id, session)
 
 
@@ -35,7 +35,7 @@ async def get_user_videos(
         user_id: UUID,
         session: AsyncSession = Depends(get_session),
         service: VideoService = Depends()
-) -> list[GetListVideo]:
+) -> list[GetVideo]:
     return await service.get_videos_by_user(user_id, session)
 
 
