@@ -7,15 +7,14 @@ from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
 
-from dependencies import get_current_user
-from dependencies import get_session
-from exceptions import UserNotFoundException, VideoNotFoundException
+from api.dependencies import get_current_user
+from api.dependencies import get_session
 from models import UserDB
 from schemas import GetVideo
 from schemas import Message
 from services import VideoService, UserService
 
-router = APIRouter()
+router = APIRouter(prefix='/video', tags=['Video'])
 
 
 templates = Jinja2Templates(directory='templates')

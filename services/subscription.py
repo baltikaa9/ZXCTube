@@ -4,7 +4,7 @@ from fastapi import HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud import CRUDUser, CRUDSubscription
-from dependencies import get_session
+from api.dependencies import get_session
 from exceptions import UserNotFoundException
 from models import UserDB, SubscriptionDB
 from schemas import SubscriberCreate, UserRead, SubscriberList, SubscriptionList

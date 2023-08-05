@@ -2,18 +2,15 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.requests import Request
-from starlette.templating import Jinja2Templates
 
-from auth import auth_backend
-from dependencies import get_session, get_current_user, _fastapi_users
+from api.dependencies import get_session, get_current_user
 from exceptions import UserNotFoundException
 from models import UserDB
-from schemas import GetVideo, UserRead, UserCreate
+from schemas import GetVideo, UserRead
 from schemas import SubscriberList, SubscriptionList
 from services import UserService, VideoService, SubscriptionService
 
-router = APIRouter()
+router = APIRouter(prefix='/user', tags=['User'])
 
 
 @router.get('/me')

@@ -5,11 +5,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 from starlette.templating import Jinja2Templates
 
-from dependencies import get_session
+from api.dependencies import get_session
 from schemas import Token
 from services import AuthService
 
-router = APIRouter(prefix='/auth')
+router = APIRouter(prefix='/auth', tags=['Auth'])
 
 templates = Jinja2Templates(directory='templates')
 

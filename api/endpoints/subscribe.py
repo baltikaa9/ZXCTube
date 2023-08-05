@@ -3,13 +3,13 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dependencies import get_current_user
-from dependencies import get_session
+from api.dependencies import get_current_user
+from api.dependencies import get_session
 from models import UserDB
 from schemas import SubscriberCreate
 from services import SubscriptionService
 
-router = APIRouter()
+router = APIRouter(prefix='/subscribe', tags=['Subscribe'])
 
 
 @router.post('/')

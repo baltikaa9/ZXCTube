@@ -28,10 +28,10 @@ class AuthService:
             user = await user_service.create_user(
                 id_info.get('name'), id_info.get('email'), id_info.get('picture'), session
             )
-        return Tokenizer.create_token(str(user.id))
+        return Security.create_token(str(user.id))
 
 
-class Tokenizer:
+class Security:
     @classmethod
     def create_token(cls, user_id: str) -> str:
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
