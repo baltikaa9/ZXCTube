@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <title>{{ user.username }}</title>
+{% endblock %}
+
+{% block content %}
+  {% for video in videos %}
+    <div class="video">
+      <a class="video-title" href="http://localhost:8000/watch?v={{ video.id }}">{{ video.title }}</a>
+      <p class="video-description">{{ video.description }}</p>
+    </div>
+  {% endfor %}
+{% endblock %}

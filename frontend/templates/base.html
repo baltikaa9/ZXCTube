@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/bootstrap.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/fontello.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/style.css') }}">
+  {% block head %} {% endblock %}
+</head>
+<body>
+  <div id="content">
+    {% block content %} {% endblock %}
+  </div>
+
+  <script src="{{ url_for('static', path='/js/bootstrap.bundle.js') }}"></script>
+  {% block script %} {% endblock %}
+</body>
+</html>

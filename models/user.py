@@ -1,5 +1,6 @@
 from uuid import uuid4, UUID
 
+from fastapi_users_db_sqlalchemy import GUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from db import Base
@@ -15,7 +16,7 @@ from db import Base
 class UserDB(Base):
     __tablename__ = 'users'
 
-    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    id: Mapped[UUID] = mapped_column(GUID, primary_key=True, default=uuid4)
     username: Mapped[str] = mapped_column(nullable=False, unique=True)
     # phone: Mapped[str] = mapped_column(nullable=False, unique=True)
     email: Mapped[str] = mapped_column(nullable=False, unique=True, index=True)

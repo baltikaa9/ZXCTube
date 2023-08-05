@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <title>{{ video.title }}</title>
+  <link rel="stylesheet" href="https://vjs.zencdn.net/8.3.0/video-js.css">
+{% endblock %}
+
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <video
+          id="my-video"
+          class="video-js"
+          controls
+          preload="auto"
+          width="1280"
+          height="720"
+          data-setup="{}"
+        >
+          <source src="/api/video/{{ video_id }}" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-6">
+        <h1 style="text-align: left">{{ video.title }}</h1>
+      </div>
+      <div class="col-6">
+        <button class="btn btn-primary btn-lg" onclick="addLike()"><i class="icon-thumbs-up"></i>{{ video.like_count }}</button>
+      </div>
+    </div>
+
+      <a style="text-align: left; font-weight: bold" href="http://localhost:8000/{{ user.id }}">{{ user.username }} <img src="{{ user.picture }}" height="30px" alt="..."></a>
+
+    {% if video.description %}
+      <div class="desc mt-1" style="font-weight: bold; border: 2px black solid; border-radius: 1%">
+        <h2 style="text-align: left">{{ video.description }}</h2>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script src="{{ url_for('static', path='/js/viseo.js') }}"></script>
+  <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+{% endblock %}
+
+
+

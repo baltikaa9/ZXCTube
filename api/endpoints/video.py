@@ -62,23 +62,23 @@ async def get_video(
     return response
 
 
-@router.get('/index/{video_id}', response_class=HTMLResponse)
-async def get_video(
-        video_id: int,
-        request: Request,
-        session: AsyncSession = Depends(get_session),
-        video_service: VideoService = Depends(),
-        user_service: UserService = Depends(),
-):
-    video = await video_service.get_video(video_id, session)
-    if not video:
-        # return RedirectResponse('http://localhost:8000/video/not_found')
-        return RedirectResponse('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
-    user = await user_service.get_user(video.user, session)
-    return templates.TemplateResponse(
-        'index.html',
-        {'request': request, 'path': video_id, 'video': video, 'user': user}
-    )
+# @router.get('/index/{video_id}', response_class=HTMLResponse)
+# async def get_video(
+#         video_id: int,
+#         request: Request,
+#         session: AsyncSession = Depends(get_session),
+#         video_service: VideoService = Depends(),
+#         user_service: UserService = Depends(),
+# ):
+#     video = await video_service.get_video(video_id, session)
+#     if not video:
+#         # return RedirectResponse('http://localhost:8000/video/not_found')
+#         return RedirectResponse('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
+#     user = await user_service.get_user(video.user, session)
+#     return templates.TemplateResponse(
+#         'index.html',
+#         {'request': request, 'path': video_id, 'video': video, 'user': user}
+#     )
 
 
 @router.delete('/{video_id}')
