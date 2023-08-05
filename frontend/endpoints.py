@@ -29,7 +29,7 @@ async def watch_video(
         return RedirectResponse('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
     user = await user_service.get_user(v.user, session)
     return templates.TemplateResponse(
-        'index.html',
+        'video.html',
         {'request': request, 'video_id': v.id, 'video': v, 'user': user}
     )
 
