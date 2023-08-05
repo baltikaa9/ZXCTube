@@ -20,14 +20,6 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
         yield session
 
 
-
-
-
-
-
-# oauth2_schema = OAuth2PasswordBearer(tokenUrl='/auth/token')
-
-
 class OAuth2ClientCredentials(OAuth2):
     def __init__(
             self,
@@ -64,9 +56,7 @@ class OAuth2ClientCredentials(OAuth2):
         return param
 
 
-oauth2_schema = OAuth2(flows=OAuthFlows(
-    clientCredentials=cast(Any, {"tokenUrl": '/auth/token'})
-))
+oauth2_schema = OAuth2ClientCredentials(tokenUrl='/api/auth/token')
 
 
 async def get_current_user(

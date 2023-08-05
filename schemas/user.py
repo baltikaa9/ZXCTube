@@ -1,7 +1,6 @@
 import uuid
 
-from fastapi_users import schemas
-from pydantic import EmailStr, BaseModel, Field
+from pydantic import EmailStr, BaseModel
 
 
 class UserCreate(BaseModel):
@@ -31,24 +30,6 @@ class UserOut(BaseModel):
     username: str
 
 
-# class Token(BaseModel):
-#     id: uuid.UUID
-#     token: dict
 class Token(BaseModel):
     access_token: str
     token_type: str
-
-
-# class UserRead(schemas.BaseUser[uuid.UUID]):
-#     username: str
-    # avatar: str
-#
-#
-# class UserCreate(schemas.CreateUpdateDictModel):
-#     username: str
-#     email: EmailStr
-#     password: str
-#
-#
-# class UserUpdate(UserRead, schemas.BaseUserUpdate):
-#     ...
