@@ -12,22 +12,17 @@ from schemas import UserRead, UserCreate
 
 
 class UserService:
+    @staticmethod
     async def create_user(
-            self,
             username: str,
             email: EmailStr,
             picture: str,
-            token: str,
             session: AsyncSession,
     ) -> UserRead:
-        try:
-            user = await self.get_user_by_email(email, session)
-        except HTTPException:
-            user = UserCreate(username=username, email=email, picture=picture)
-            crud_user = CRUDUser(UserDB, session)
-            user = await crud_user.create(user)
-            user = UserRead.model_validate(user)
-        return user
+        user = UserCreate(username=username, email=email, picture=picture)
+        crud_user = CRUDUser(UserDB, session)
+        user = await crud_user.create(user)
+        return UserRead.model_validate(user)
 
     @staticmethod
     async def get_user(user_id: UUID, session: AsyncSession) -> UserRead:

@@ -4,7 +4,7 @@ from fastapi_users import schemas
 from pydantic import EmailStr, BaseModel, Field
 
 
-class User(BaseModel):
+class UserCreate(BaseModel):
     username: str
     email: EmailStr
     picture: str
@@ -13,13 +13,16 @@ class User(BaseModel):
         from_attributes = True
 
 
-class UserCreate(User):
-    # id: uuid.UUID
-    # token: str
-    ...
+class UserRead(BaseModel):
+    id: uuid.UUID
+    username: str
+    picture: str | None
+
+    class Config:
+        from_attributes = True
 
 
-class UserUpdate(User):
+class UserUpdate(BaseModel):
     ...
 
 
@@ -28,13 +31,16 @@ class UserOut(BaseModel):
     username: str
 
 
+# class Token(BaseModel):
+#     id: uuid.UUID
+#     token: dict
 class Token(BaseModel):
-    id: uuid.UUID
-    token: dict
+    access_token: str
+    token_type: str
 
 
-class UserRead(schemas.BaseUser[uuid.UUID]):
-    username: str
+# class UserRead(schemas.BaseUser[uuid.UUID]):
+#     username: str
     # avatar: str
 #
 #

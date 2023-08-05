@@ -6,7 +6,8 @@ from starlette.requests import Request
 from starlette.templating import Jinja2Templates
 
 from auth import auth_backend
-from dependencies import get_session, current_active_user, _fastapi_users
+from dependencies import get_session, get_current_user, _fastapi_users
+from exceptions import UserNotFoundException
 from models import UserDB
 from schemas import GetVideo, UserRead, UserCreate
 from schemas import SubscriberList, SubscriptionList
@@ -17,7 +18,7 @@ router = APIRouter()
 
 @router.get('/me')
 async def get_me(
-        current_user: UserDB = Depends(current_active_user),
+        current_user: UserDB = Depends(get_current_user),
 ) -> UserRead:
     return UserRead.model_validate(current_user)
 
@@ -25,7 +26,7 @@ async def get_me(
 @router.get('/me/videos')
 async def get_my_videos(
         session: AsyncSession = Depends(get_session),
-        current_user: UserDB = Depends(current_active_user),
+        current_user: UserDB = Depends(get_current_user),
         service: VideoService = Depends()
 ) -> list[GetVideo]:
     return await service.get_videos_by_user(current_user.id, session)
@@ -43,7 +44,7 @@ async def get_user_videos(
 @router.get('/me/subscribers')
 async def get_my_subscribers(
         session: AsyncSession = Depends(get_session),
-        current_user: UserDB = Depends(current_active_user),
+        current_user: UserDB = Depends(get_current_user),
         service: SubscriptionService = Depends()
 ) -> SubscriberList:
     followers = await service.get_user_subscribers(current_user.id, session)
@@ -53,7 +54,7 @@ async def get_my_subscribers(
 @router.get('/me/subscriptions')
 async def get_my_subscriptions(
         session: AsyncSession = Depends(get_session),
-        current_user: UserDB = Depends(current_active_user),
+        current_user: UserDB = Depends(get_current_user),
         service: SubscriptionService = Depends()
 ) -> SubscriptionList:
     subscriptions = await service.get_user_subscriptions(current_user.id, session)
@@ -91,13 +92,15 @@ async def get_subscriptions(
 # )
 
 
-@router.delete('/{user_id}', dependencies=[Depends(current_active_user)])
+@router.delete('/{user_id}', dependencies=[Depends(get_current_user)])
 async def delete_user(
         user_id: UUID,
         session: AsyncSession = Depends(get_session),
         service: UserService = Depends()
 ) -> UserRead:
     user = await service.delete_user(user_id, session)
+    if not user:
+        raise UserNotFoundException()
     return user
 
 # router.include_router(

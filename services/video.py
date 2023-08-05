@@ -54,7 +54,7 @@ class VideoService:
             await file.write(data)
 
     @staticmethod
-    async def delete_video(video_id, session: AsyncSession) -> GetVideo:
+    async def delete_video(video_id, session: AsyncSession) -> GetVideo | None:
         crud_video = CRUDVideo(VideoDB, session)
         video = await crud_video.delete(video_id)
         if not video:
@@ -64,7 +64,7 @@ class VideoService:
         return GetVideo.model_validate(video)
 
     @staticmethod
-    async def get_video(video_id: int, session: AsyncSession) -> GetVideo:
+    async def get_video(video_id: int, session: AsyncSession) -> GetVideo | None:
         crud_video = CRUDVideo(VideoDB, session)
         video = await crud_video.get(video_id)
         if not video:

@@ -18,9 +18,6 @@ class CRUDVideo(CRUDBase[VideoDB, UploadVideo]):
         query = update(self.model).where(self.model.id == video_id).values(like_count=self.model.like_count + 1)
         await self.session.execute(query)
         await self.session.commit()
-        # new_like = VideoLikeDB(video=video_id, user=user_id)
-        # self.session.add(new_like)
-        # await self.session.commit()
         return video
 
     async def delete_like(self, video_id: int) -> VideoDB:

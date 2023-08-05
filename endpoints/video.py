@@ -7,8 +7,9 @@ from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
 
-from dependencies import current_active_user
+from dependencies import get_current_user
 from dependencies import get_session
+from exceptions import UserNotFoundException, VideoNotFoundException
 from models import UserDB
 from schemas import GetVideo
 from schemas import Message
@@ -27,7 +28,7 @@ async def create_video(
         file: Annotated[UploadFile, File()],
         description: Annotated[str | None, Form()] = None,
         session: AsyncSession = Depends(get_session),
-        current_user: UserDB = Depends(current_active_user),
+        current_user: UserDB = Depends(get_current_user),
         service: VideoService = Depends()
 ) -> GetVideo:
     video = await service.save_video(current_user, file, title, description, background_tasks, session)
@@ -95,7 +96,7 @@ async def delete_video(
 async def like_video(
         video_id: int,
         session: AsyncSession = Depends(get_session),
-        current_user: UserDB = Depends(current_active_user),
+        current_user: UserDB = Depends(get_current_user),
         service: VideoService = Depends()
 ):
     video = await service.add_or_delete_like(video_id, session, current_user)
