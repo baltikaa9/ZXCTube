@@ -9,6 +9,7 @@ from starlette.templating import Jinja2Templates
 
 from api.dependencies import get_current_user
 from api.dependencies import get_session
+from exceptions import VideoNotFoundException
 from models import UserDB
 from schemas import GetVideo
 from schemas import Message
@@ -88,6 +89,8 @@ async def delete_video(
         service: VideoService = Depends()
 ) -> GetVideo:
     video = await service.delete_video(video_id, session)
+    if not video:
+        raise VideoNotFoundException()
     return video
 
 

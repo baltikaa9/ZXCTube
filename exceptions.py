@@ -1,11 +1,11 @@
 from fastapi import HTTPException
 
 
-class VideoNotFoundException(Exception):
+class VideoNotFoundException(HTTPException):
     def __init__(self):
-        raise HTTPException(status_code=404, detail='Video not found')
+        super().__init__(status_code=404, detail='Video not found')
 
 
-class UserNotFoundException(Exception):
+class UserNotFoundException(HTTPException):
     def __init__(self):
-        raise HTTPException(status_code=404, detail='User not found')
+        super().__init__(status_code=404, detail='User not found')

@@ -22,9 +22,8 @@ class AuthService:
         except ValueError:
             raise HTTPException(status_code=403, detail='Bad code')
         user_service = UserService()
-        try:
-            user = await user_service.get_user_by_email(id_info.get('email'), session)
-        except UserNotFoundException:
+        user = await user_service.get_user_by_email(id_info.get('email'), session)
+        if not user:
             user = await user_service.create_user(
                 id_info.get('name'), id_info.get('email'), id_info.get('picture'), session
             )

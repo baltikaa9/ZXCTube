@@ -25,25 +25,22 @@ class UserService:
         return UserRead.model_validate(user)
 
     @staticmethod
-    async def get_user(user_id: UUID, session: AsyncSession) -> UserRead:
+    async def get_user(user_id: UUID, session: AsyncSession) -> UserRead | None:
         crud_user = CRUDUser(UserDB, session)
         user = await crud_user.get(user_id)
-        if not user:
-            raise UserNotFoundException()
-        return UserRead.model_validate(user)
+        if user:
+            return UserRead.model_validate(user)
 
     @staticmethod
-    async def get_user_by_email(email: EmailStr, session: AsyncSession) -> UserRead:
+    async def get_user_by_email(email: EmailStr, session: AsyncSession) -> UserRead | None:
         crud_user = CRUDUser(UserDB, session)
         user = await crud_user.get_by_email(email)
-        if not user:
-            raise UserNotFoundException()
-        return UserRead.model_validate(user)
+        if user:
+            return UserRead.model_validate(user)
 
     @staticmethod
-    async def delete_user(user_id: UUID, session: AsyncSession) -> UserRead:
+    async def delete_user(user_id: UUID, session: AsyncSession) -> UserRead | None:
         crud_user = CRUDUser(UserDB, session)
         user = await crud_user.delete(user_id)
-        if not user:
-            raise UserNotFoundException()
-        return UserRead.model_validate(user)
+        if user:
+            return UserRead.model_validate(user)
