@@ -1,11 +1,8 @@
 from typing import Annotated
 
 from fastapi import APIRouter, UploadFile, Form, File, Depends, BackgroundTasks, Request
-from fastapi.responses import StreamingResponse, RedirectResponse
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.responses import HTMLResponse
-from starlette.templating import Jinja2Templates
-
 
 from api.dependencies import get_current_user
 from api.dependencies import get_session
@@ -13,12 +10,9 @@ from exceptions import VideoNotFoundException
 from models import UserDB
 from schemas import GetVideo
 from schemas import Message
-from services import VideoService, UserService
+from services import VideoService
 
 router = APIRouter(prefix='/video', tags=['Video'])
-
-
-templates = Jinja2Templates(directory='templates')
 
 
 @router.post('/')
@@ -33,11 +27,6 @@ async def create_video(
 ) -> GetVideo:
     video = await service.save_video(current_user, file, title, description, background_tasks, session)
     return video
-
-
-@router.get('/not_found')
-async def video_not_found(request: Request):
-    return templates.TemplateResponse('404.html', {'request': request})
 
 
 @router.get('/{video_id}', responses={404: {'model': Message}})
@@ -61,25 +50,6 @@ async def get_video(
         **headers,
     })
     return response
-
-
-# @router.get('/index/{video_id}', response_class=HTMLResponse)
-# async def get_video(
-#         video_id: int,
-#         request: Request,
-#         session: AsyncSession = Depends(get_session),
-#         video_service: VideoService = Depends(),
-#         user_service: UserService = Depends(),
-# ):
-#     video = await video_service.get_video(video_id, session)
-#     if not video:
-#         # return RedirectResponse('http://localhost:8000/video/not_found')
-#         return RedirectResponse('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
-#     user = await user_service.get_user(video.user, session)
-#     return templates.TemplateResponse(
-#         'video.html',
-#         {'request': request, 'path': video_id, 'video': video, 'user': user}
-#     )
 
 
 @router.delete('/{video_id}')

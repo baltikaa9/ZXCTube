@@ -24,7 +24,6 @@ async def watch_video(
         video_service: VideoService = Depends(),
         user_service: UserService = Depends(),
 ):
-
     video = await video_service.get_video(video_id, session)
     if not video:
         # return RedirectResponse('http://localhost:8000/video/not_found')
@@ -34,6 +33,11 @@ async def watch_video(
         'video.html',
         {'request': request, 'video': video, 'user': user}
     )
+
+
+@router.get('/not_found')
+async def video_not_found(request: Request):
+    return templates.TemplateResponse('404.html', {'request': request})
 
 
 @router.get('/{user_id}', response_class=HTMLResponse)
