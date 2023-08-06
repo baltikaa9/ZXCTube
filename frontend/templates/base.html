@@ -1,13 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="font-size: 15px; font-family: Roboto, Arial, sans-serif;">
 <head>
   <meta charset="UTF-8">
+  {% block head %} {% endblock %}
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/bootstrap.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/fontello.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/style.css') }}">
-  {% block head %} {% endblock %}
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/img/zxc.ico') }}">
 </head>
 <body>
+  <header>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <a href="http://localhost:8000" title="Главная страница ZXCTube"><img src="{{ url_for('static', path='/img/logo.png') }}" alt="" width="100px"></a>
+        </div>
+      </div>
+    </div>
+
+  </header>
   <div id="content">
     {% block content %} {% endblock %}
   </div>

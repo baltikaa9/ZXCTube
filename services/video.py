@@ -72,7 +72,13 @@ class VideoService:
     @staticmethod
     async def get_videos_by_user(user_id: UUID, session: AsyncSession) -> list[GetVideo]:
         crud_video = CRUDVideo(VideoDB, session)
-        videos = await crud_video.get_by_user(user_id)
+        videos = await crud_video.get_all(user_id)
+        return [GetVideo.model_validate(video) for video in videos]
+
+    @staticmethod
+    async def get_all_videos(session: AsyncSession) -> list[GetVideo]:
+        crud_video = CRUDVideo(VideoDB, session)
+        videos = await crud_video.get_all()
         return [GetVideo.model_validate(video) for video in videos]
 
     @staticmethod

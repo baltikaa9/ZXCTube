@@ -4,12 +4,13 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
-from starlette.responses import RedirectResponse, HTMLResponse
+from starlette.responses import RedirectResponse, HTMLResponse, FileResponse
 from starlette.templating import Jinja2Templates
 
 from api.dependencies import get_session
 from exceptions import UserNotFoundException
 from services import VideoService, UserService
+from schemas import GetVideoForHTML
 
 router = APIRouter(tags=['Frontend'])
 
@@ -55,4 +56,26 @@ async def get_user(
     return templates.TemplateResponse(
         'user.html',
         {'request': request, 'user': user, 'videos': videos}
+    )
+
+
+@router.get('/', response_class=HTMLResponse)
+async def get_homepage(
+        request: Request,
+        session: AsyncSession = Depends(get_session),
+        video_service: VideoService = Depends(),
+        user_service: UserService = Depends(),
+):
+    videos = await video_service.get_all_videos(session)
+    videos = [GetVideoForHTML(
+        id=video.id,
+        title=video.title,
+        description=video.description,
+        file=video.file,
+        like_count=video.like_count,
+        user=await user_service.get_user(video.user, session),
+    ) for video in videos]
+    return templates.TemplateResponse(
+        'homepage.html',
+        {'request': request, 'videos': videos}
     )

@@ -33,7 +33,7 @@
       </div>
     </div>
 
-      <a style="text-align: left; font-weight: bold" href="http://localhost:8000/{{ user.id }}"><img src="{{ user.picture }}" height="30px" alt="..."> {{ user.username }}</a>
+      <a class="username" href="http://localhost:8000/{{ user.id }}" title="{{ user.username }}"><img src="{{ user.picture }}" height="30px" alt="..."> {{ user.username }}</a>
 
     {% if video.description %}
       <div class="desc mt-1">

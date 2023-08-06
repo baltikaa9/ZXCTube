@@ -5,10 +5,17 @@
 {% endblock %}
 
 {% block content %}
-  {% for video in videos %}
-    <div class="video">
-      <a class="video-title" href="http://localhost:8000/watch?v={{ video.id }}">{{ video.title }}</a>
-      <p class="video-description">{{ video.description }}</p>
+  <div class="container">
+    <div class="row">
+      {% for video in videos %}
+        <div class="col-3 mt-4">
+          <div class="video">
+            <h3><a class="video-title" href="http://localhost:8000/watch?v={{ video.id }}" title="{{ video.title }}">{{ video.title }}</a></h3>
+            <p class="video-description">{{ video.description }}</p>
+          </div>
+        </div>
+      {% endfor %}
     </div>
-  {% endfor %}
+  </div>
+
 {% endblock %}

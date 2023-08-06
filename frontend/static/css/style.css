@@ -12,6 +12,7 @@ body {
 
 a {
     color: inherit;
+    text-decoration: none;
 }
 
 .desc {
@@ -19,4 +20,12 @@ a {
     background-color: #272727;
     font-weight: bold;
     border-radius: 10px;
+}
+
+.username {
+    color: #8a8a8a;
+}
+
+.username:hover {
+    color: var(--color-2);
 }
