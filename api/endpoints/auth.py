@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Form
+from fastapi import APIRouter, Depends, Form, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 from starlette.templating import Jinja2Templates
@@ -11,17 +11,17 @@ from services import AuthService
 
 router = APIRouter(prefix='/auth', tags=['Auth'])
 
-templates = Jinja2Templates(directory='templates')
+templates = Jinja2Templates(directory='frontend/templates')
 
 
-@router.get('/')
-async def google_auth(request: Request):
-    return templates.TemplateResponse('auth.html', {'request': request})
+# @router.get('/')
+# async def google_auth(request: Request):
+#     return templates.TemplateResponse('auth.html', {'request': request})
 
 
 @router.post('/token')
 async def google_auth(
-        credential: Annotated[str, Form()],
+        credential: Annotated[str, Body()],
         session: AsyncSession = Depends(get_session),
         service: AuthService = Depends(),
 ) -> Token:

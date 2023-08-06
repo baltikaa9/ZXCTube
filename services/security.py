@@ -7,7 +7,6 @@ from google.oauth2 import id_token
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import GOOGLE_CLIENT_ID, ACCESS_TOKEN_EXPIRE_MINUTES, ACCESS_TOKEN_JWT_SUBJECT, SECRET_KEY, ALGORITHM
-from exceptions import UserNotFoundException
 from services import UserService
 
 
@@ -18,7 +17,7 @@ class AuthService:
             session: AsyncSession,
     ) -> str:
         try:
-            id_info = id_token.verify_oauth2_token(token_id, requests.Request(), GOOGLE_CLIENT_ID)
+            id_info = id_token.verify_oauth2_token(token_id, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=1)
         except ValueError:
             raise HTTPException(status_code=403, detail='Bad code')
         user_service = UserService()

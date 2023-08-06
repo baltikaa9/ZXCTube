@@ -9,11 +9,37 @@
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/img/zxc.ico') }}">
 </head>
 <body>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <div id="g_id_onload"
+     data-client_id="734458996880-si1er8ulmuho5281e0eg71ar47atg6as.apps.googleusercontent.com"
+     data-context="signin"
+     data-ux_mode="popup"
+     data-callback="authenticateUser"
+     data-auto_prompt="false">
+  </div>
+
+
+
   <header>
     <div class="container">
       <div class="row">
-        <div class="col-12">
-          <a href="http://localhost:8000" title="Главная страница ZXCTube"><img src="{{ url_for('static', path='/img/logo.png') }}" alt="" width="100px"></a>
+        <div class="col-6">
+          <a style="font-weight: bold; font-size: 36px" href="http://localhost:8000" title="Главная страница ZXCTube"><img src="{{ url_for('static', path='/img/logo.png') }}" alt="" width="100px">Tube</a>
+        </div>
+{#        <div class="col-2"></div>#}
+{#        <div class="col-2"></div>#}
+{#        <div class="col-2"></div>#}
+{#        <div class="col-2"></div>#}
+        <div class="col-6 pt-3 d-md-flex justify-content-md-end">
+          <div class="g_id_signin"
+             data-type="standard"
+             data-shape="pill"
+             data-theme="filled_black"
+             data-text="signin_with"
+             data-size="large"
+             data-logo_alignment="left"
+             style="margin-left: -30px">
+          </div>
         </div>
       </div>
     </div>
@@ -24,6 +50,7 @@
   </div>
 
   <script src="{{ url_for('static', path='/js/bootstrap.bundle.js') }}"></script>
+  <script src="{{ url_for('static', path='/js/script.js') }}"></script>
   {% block script %} {% endblock %}
 </body>
 </html>

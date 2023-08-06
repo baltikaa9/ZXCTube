@@ -26,14 +26,19 @@
 
     <div class="row">
       <div class="col-6">
-        <h1 style="text-align: left">{{ video.title }}</h1>
+        <h1>{{ video.title }}</h1>
       </div>
-      <div class="col-6">
-        <button class="btn btn-primary btn-lg" onclick="addLike({{ video.id }})"><i class="icon-thumbs-up"></i>{{ video.like_count }}</button>
+      <div class="col-6 d-md-flex justify-content-md-end">
+        <span id="like-count" style="font-weight: bold; margin: 17px 7px"> {{ video.like_count }} </span>
+        <button id="like-button" class="btn btn-dark btn-sm mt-2" onclick=addLike({{ video.id }})> <i class="icon-thumbs-up"></i></button>
       </div>
     </div>
 
-      <a class="username" href="http://localhost:8000/{{ user.id }}" title="{{ user.username }}"><img src="{{ user.picture }}" height="30px" alt="..."> {{ user.username }}</a>
+    <div class="row">
+      <div class="col-1">
+        <a class="username" href="http://localhost:8000/{{ user.id }}" title="{{ user.username }}"><img src="{{ user.picture }}" height="30px" alt="..."> {{ user.username }}</a>
+      </div>
+    </div>
 
     {% if video.description %}
       <div class="desc mt-1">
@@ -44,7 +49,7 @@
 {% endblock %}
 
 {% block script %}
-  <script src="{{ url_for('static', path='/js/video.js') }}"></script>
+{#  <script src="{{ url_for('static', path='/js/video.js') }}"></script>#}
   <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
 {% endblock %}
 

@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import AsyncGenerator, cast, Any
 
 import jwt
@@ -5,7 +6,7 @@ from fastapi import Depends, HTTPException
 from fastapi.openapi.models import OAuthFlows
 from fastapi.security import OAuth2PasswordBearer, OAuth2
 from fastapi.security.utils import get_authorization_scheme_param
-from jwt import PyJWTError
+from jwt import PyJWTError, ExpiredSignatureError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
@@ -32,7 +33,7 @@ class OAuth2ClientCredentials(OAuth2):
         if not scopes:
             scopes = {}
         flows = OAuthFlows(
-            clientCredentials=cast(Any, {"tokenUrl": tokenUrl, "scopes": scopes})
+            clientCredentials=cast(Any, {'tokenUrl': tokenUrl, 'scopes': scopes})
         )
         super().__init__(
             flows=flows,
@@ -42,14 +43,14 @@ class OAuth2ClientCredentials(OAuth2):
         )
 
     async def __call__(self, request: Request) -> str | None:
-        authorization = request.headers.get("Authorization")
+        authorization = request.headers.get('Authorization')
         scheme, param = get_authorization_scheme_param(authorization)
-        if not authorization or scheme.lower() != "bearer":
+        if not authorization or scheme.lower() != 'bearer':
             if self.auto_error:
                 raise HTTPException(
                     status_code=401,
-                    detail="Not authenticated",
-                    headers={"WWW-Authenticate": "Bearer"},
+                    detail='Not authenticated',
+                    headers={'WWW-Authenticate': 'Bearer'},
                 )
             else:
                 return None
@@ -65,6 +66,8 @@ async def get_current_user(
 ) -> None:
     try:
         payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail='Unauthorized')
     except PyJWTError:
         raise HTTPException(status_code=403, detail='Bad credentials')
 
