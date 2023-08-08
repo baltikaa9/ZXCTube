@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.endpoints import video_router, user_router, subscribe_router, auth_router
+from .endpoints import video_router, user_router, subscribe_router, auth_router
 
 api_router = APIRouter(prefix='/api')
 
