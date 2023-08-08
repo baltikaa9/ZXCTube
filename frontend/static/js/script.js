@@ -1,18 +1,20 @@
 function authenticateUser (googleResponse) {
     console.log(googleResponse.credential)
-    fetch('/api/auth/token', {
+    fetch('/api/auth/login', {
       method: 'post',
       body: googleResponse.credential
     })
-      .then(response => response.json())
-      .then(token => token.access_token)
-      .then(token => saveToken(token))
+        .then(response => response.json())
+        .then(token => token.access_token)
+        .then(token => saveToken(token))
+        .then(token => document.cookie = `Authorization=Bearer ${token}; max-age=1800`)
 
-    console.log(getToken())
+    window.location.reload()
 }
 
 function saveToken(token) {
     localStorage.setItem('accessToken', token)
+    return token
 }
 
 function getToken() {
@@ -39,3 +41,26 @@ function changeLikeCount(likeCount) {
     likeCounter.textContent = likeCount
 }
 
+function subscribe(user_id) {
+    const token = getToken()
+    fetch(`/api/subscribe/?user=${user_id}`, {
+        method: 'post',
+        headers: {
+                    'Authorization': `Bearer ${token}`
+            }
+    })
+        .then(r => console.log(r.statusText))
+    window.location.reload()
+}
+
+function unsubscribe(user_id) {
+    const token = getToken()
+    fetch(`/api/subscribe/?user=${user_id}`, {
+        method: 'delete',
+        headers: {
+                    'Authorization': `Bearer ${token}`
+            }
+    })
+        .then(r => console.log(r.statusText))
+    window.location.reload()
+}

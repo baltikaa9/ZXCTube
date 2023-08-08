@@ -19,28 +19,33 @@
   </div>
 
 
-
   <header>
     <div class="container">
       <div class="row">
         <div class="col-6">
-          <a style="font-weight: bold; font-size: 36px" href="http://localhost:8000" title="Главная страница ZXCTube"><img src="{{ url_for('static', path='/img/logo.png') }}" alt="" width="100px">Tube</a>
+          <a style="font-weight: bold; font-size: 36px" href="/" title="Главная страница ZXCTube"><img src="{{ url_for('static', path='/img/logo.png') }}" alt="" width="100px">Tube</a>
         </div>
 {#        <div class="col-2"></div>#}
 {#        <div class="col-2"></div>#}
 {#        <div class="col-2"></div>#}
 {#        <div class="col-2"></div>#}
-        <div class="col-6 pt-3 d-md-flex justify-content-md-end">
-          <div class="g_id_signin"
-             data-type="standard"
-             data-shape="pill"
-             data-theme="filled_black"
-             data-text="signin_with"
-             data-size="large"
-             data-logo_alignment="left"
-             style="margin-left: -30px">
+        {% if current_user %}
+          <div class="col-6 pt-3 d-md-flex justify-content-md-end">
+            <a href="http://localhost:8000/{{ current_user.id }}"><img src="{{ current_user.picture }}" alt="" width="35"></a>
           </div>
-        </div>
+        {% else %}
+          <div class="col-6 pt-3 d-md-flex justify-content-md-end">
+            <div class="g_id_signin"
+               data-type="standard"
+               data-shape="pill"
+               data-theme="filled_black"
+               data-text="signin_with"
+               data-size="large"
+               data-logo_alignment="left"
+               style="margin-left: -30px">
+            </div>
+          </div>
+         {% endif %}
       </div>
     </div>
 

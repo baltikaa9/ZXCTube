@@ -1,19 +1,16 @@
-from datetime import datetime
 from typing import AsyncGenerator, cast, Any
 
-import jwt
 from fastapi import Depends, HTTPException
 from fastapi.openapi.models import OAuthFlows
-from fastapi.security import OAuth2PasswordBearer, OAuth2
+from fastapi.security import OAuth2
 from fastapi.security.utils import get_authorization_scheme_param
-from jwt import PyJWTError, ExpiredSignatureError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
-from config import SECRET_KEY, ALGORITHM
 from crud import CRUDUser
 from db import async_session
 from models import UserDB
+from services import Security
 
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
@@ -42,8 +39,18 @@ class OAuth2ClientCredentials(OAuth2):
             auto_error=auto_error,
         )
 
-    async def __call__(self, request: Request) -> str | None:
+    async def get_headers_token(self, request: Request) -> str | None:
         authorization = request.headers.get('Authorization')
+        return await self._get_token(authorization)
+
+    async def get_cookies_token(self, request: Request) -> str | None:
+        authorization = request.cookies.get('Authorization')
+        try:
+            return await self._get_token(authorization)
+        except HTTPException:
+            return None
+
+    async def _get_token(self, authorization: str | None) -> str | None:
         scheme, param = get_authorization_scheme_param(authorization)
         if not authorization or scheme.lower() != 'bearer':
             if self.auto_error:
@@ -60,17 +67,27 @@ class OAuth2ClientCredentials(OAuth2):
 oauth2_schema = OAuth2ClientCredentials(tokenUrl='/api/auth/token')
 
 
-async def get_current_user(
-        token: str = Depends(oauth2_schema),
+async def get_current_user_from_cookies(
+        token: str | None = Depends(oauth2_schema.get_cookies_token),
         session: AsyncSession = Depends(get_session),
-) -> None:
-    try:
-        payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
-    except ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail='Unauthorized')
-    except PyJWTError:
-        raise HTTPException(status_code=403, detail='Bad credentials')
+) -> UserDB | None:
+    if token:
+        payload = await Security.decode_token(token)
+        return await _get_current_user(payload, session)
 
+
+async def get_current_user_from_headers(
+        token: str = Depends(oauth2_schema.get_headers_token),
+        session: AsyncSession = Depends(get_session),
+) -> UserDB:
+    payload = await Security.decode_token(token)
+    return await _get_current_user(payload, session)
+
+
+async def _get_current_user(
+        payload: dict,
+        session: AsyncSession,
+) -> UserDB:
     user_id = payload.get('user_id')
     user_crud = CRUDUser(UserDB, session)
     user = await user_crud.get(user_id)

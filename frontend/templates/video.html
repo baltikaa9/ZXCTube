@@ -28,15 +28,26 @@
       <div class="col-6">
         <h1>{{ video.title }}</h1>
       </div>
-      <div class="col-6 d-md-flex justify-content-md-end">
-        <span id="like-count" style="font-weight: bold; margin: 17px 7px"> {{ video.like_count }} </span>
-        <button id="like-button" class="btn btn-dark btn-sm mt-2" onclick=addLike({{ video.id }})> <i class="icon-thumbs-up"></i></button>
-      </div>
+
     </div>
 
-    <div class="row">
-      <div class="col-1">
-        <a class="username" href="http://localhost:8000/{{ user.id }}" title="{{ user.username }}"><img src="{{ user.picture }}" height="30px" alt="..."> {{ user.username }}</a>
+    <div class="row" style="height: 60px">
+      <div class="col-4 d-md-flex">
+        <a class="username" href="http://localhost:8000/{{ user.id }}" title="{{ user.username }}"><img src="{{ user.picture }}" height="40px" alt="..."> {{ user.username }}</a>
+      </div>
+{#      <div class="col-2"></div>#}
+      <div class="col-4 d-md-flex">
+        {% if current_user and current_user.id != user.id %}
+          {% if user in subscriptions %}
+            <button id="subscribeButton" class="btn btn-dark btn-lg btn-watch" onclick="unsubscribe('{{ user.id }}')">Отписаться</button>
+          {% else %}
+            <button id="subscribeButton" class="btn btn-dark btn-lg btn-watch" onclick="subscribe('{{ user.id }}')">Подписаться</button>
+          {% endif %}
+        {% endif %}
+      </div>
+      <div class="col-4 d-md-flex justify-content-md-end">
+        <span id="like-count" class="like-count"> {{ video.like_count }} </span>
+        <button id="like-button" class="btn btn-dark btn-sm btn-watch" onclick=addLike({{ video.id }})><i class="icon-thumbs-up"></i></button>
       </div>
     </div>
 

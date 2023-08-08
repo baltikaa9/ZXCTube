@@ -5,6 +5,14 @@
     --color-2: #e3f1f1;
 }
 
+* {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+input, button, textarea {font-family: inherit}
+
 body {
     background-color: var(--color-1);
     color: var(--color-2);
@@ -28,4 +36,13 @@ a {
 
 .username:hover {
     color: var(--color-2);
+}
+
+.btn-watch {
+    height: 40px;
+}
+
+.like-count {
+    font-weight: bold;
+    margin: 8px 7px
 }
