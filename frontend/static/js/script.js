@@ -13,7 +13,14 @@ function login (googleResponse) {
 }
 
 function logout() {
-    removeToken();
+    fetch('/api/auth/logout', {
+        method: 'post',
+        headers: {
+            'Authorization': `Bearer ${getToken()}`
+        },
+    })
+        .then(() => removeToken());
+
     window.location.reload();
 }
 
