@@ -31,7 +31,7 @@ async def google_auth(
         token_id=credential,
         session=session,
     )
-    return Token(access_token=access_token, refresh_token=refresh_token, token_type='bearer')
+    return Token(access_token=access_token, refresh_token=refresh_token)
 
 
 # @router.post('/refresh', dependencies=[Depends(get_current_user_from_headers)])
@@ -45,7 +45,7 @@ async def refresh(
         refresh_token=refresh_token,
         session=session,
     )
-    return Token(access_token=access_token, refresh_token=refresh_token, token_type='bearer')
+    return Token(access_token=access_token, refresh_token=refresh_token)
 
 
 @router.post('/logout')
