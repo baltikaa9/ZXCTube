@@ -9,7 +9,7 @@
     <div class="row">
       {% for video in videos %}
         <div class="col-3 mt-4">
-          <h3><a href="http://localhost:8000/{{ video.user.id }}" title="{{ video.user.username }}"><img src="{{ video.user.picture }}" alt="" width="30px"></a>
+          <h3><a href="http://localhost:8000/{{ video.user.id }}" title="{{ video.user.username }}"><img class="user-pic" src="{{ video.user.picture }}" alt="" width="30px"></a>
             <a href="http://localhost:8000/watch?v={{ video.id }}" title="{{ video.title }}">{{ video.title }}</a>
           </h3>
 

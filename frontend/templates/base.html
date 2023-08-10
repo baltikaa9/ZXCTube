@@ -11,30 +11,22 @@
 <body>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <div id="g_id_onload"
-     data-client_id="734458996880-si1er8ulmuho5281e0eg71ar47atg6as.apps.googleusercontent.com"
+     data-client_id="997307486852-nrh7de9jt8bg15agf6sd086v8ji016qi.apps.googleusercontent.com"
      data-context="signin"
      data-ux_mode="popup"
-     data-callback="authenticateUser"
-     data-auto_prompt="false">
+     data-callback="login"
+     data-auto_prompt="false"
+  >
   </div>
 
 
   <header>
     <div class="container">
       <div class="row">
-        <div class="col-6">
-          <a style="font-weight: bold; font-size: 36px" href="/" title="Главная страница ZXCTube"><img src="{{ url_for('static', path='/img/logo.png') }}" alt="" width="100px">Tube</a>
+        <div class="col-6 logo">
+          <a href="/" title="Главная страница ZXCTube"><img src="{{ url_for('static', path='/img/logo.png') }}" alt="" width="100px">Tube</a>
         </div>
-{#        <div class="col-2"></div>#}
-{#        <div class="col-2"></div>#}
-{#        <div class="col-2"></div>#}
-{#        <div class="col-2"></div>#}
-        {% if current_user %}
-          <div class="col-6 pt-3 d-md-flex justify-content-md-end">
-            <a href="http://localhost:8000/{{ current_user.id }}"><img src="{{ current_user.picture }}" alt="" width="35"></a>
-          </div>
-        {% else %}
-          <div class="col-6 pt-3 d-md-flex justify-content-md-end">
+        <div id="my-profile" class="col-6 pt-3 d-md-flex justify-content-md-end">
             <div class="g_id_signin"
                data-type="standard"
                data-shape="pill"
@@ -44,18 +36,49 @@
                data-logo_alignment="left"
                style="margin-left: -30px">
             </div>
-          </div>
-         {% endif %}
+        </div>
       </div>
     </div>
-
   </header>
+
+
   <div id="content">
     {% block content %} {% endblock %}
   </div>
 
   <script src="{{ url_for('static', path='/js/bootstrap.bundle.js') }}"></script>
   <script src="{{ url_for('static', path='/js/script.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        const token = getToken();
+        let myProfile = document.getElementById('my-profile');
+        if (token) {
+            const response = await fetch('/api/user/me', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            let me = await response.json();
+            let myProfileLink = document.createElement('a');
+            myProfileLink.href = `http://localhost:8000/${me.id}`;
+            myProfileLink.className = 'user-link'
+            let myProfilePic = document.createElement('img');
+            myProfilePic.className = 'user-pic';
+            myProfilePic.src = me.picture;
+            myProfilePic.width = 40;
+            myProfilePic.alt = '';
+            myProfileLink.appendChild(myProfilePic);
+            myProfile.innerHTML = '';
+            myProfile.appendChild(myProfileLink);
+
+            let logoutButton = document.createElement('button');
+            logoutButton.className = 'btn btn-dark btn-sm btn-logout';
+            logoutButton.textContent = 'Выйти';
+            logoutButton.onclick = (() => logout());
+            myProfile.appendChild(logoutButton)
+        }
+    });
+  </script>
   {% block script %} {% endblock %}
 </body>
 </html>

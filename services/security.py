@@ -51,9 +51,10 @@ class AuthService:
     async def logout(
             user_id: UUID,
             session: AsyncSession,
-    ) -> UUID:
+    ) -> list[UUID]:
         crud_token = CRUDRefreshToken(RefreshTokenDB, session)
-        return (await crud_token.delete_by_user(user_id)).token
+        tokens = await crud_token.delete_by_user(user_id)
+        return [token.token for token in tokens]
 
 
 class Security:

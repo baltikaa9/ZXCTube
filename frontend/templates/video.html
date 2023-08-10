@@ -33,35 +33,65 @@
 
     <div class="row" style="height: 60px">
       <div class="col-4 d-md-flex">
-        <a class="username" href="http://localhost:8000/{{ user.id }}" title="{{ user.username }}"><img src="{{ user.picture }}" height="40px" alt="..."> {{ user.username }}</a>
+        <a class="username" href="http://localhost:8000/{{ author.id }}" title="{{ author.username }}">
+          <img class="user-pic" src="{{ author.picture }}" width="40px" alt="..."> {{ author.username }}
+        </a>
       </div>
-{#      <div class="col-2"></div>#}
-      <div class="col-4 d-md-flex">
-        {% if current_user and current_user.id != user.id %}
-          {% if user in subscriptions %}
-            <button id="subscribeButton" class="btn btn-dark btn-lg btn-watch" onclick="unsubscribe('{{ user.id }}')">Отписаться</button>
-          {% else %}
-            <button id="subscribeButton" class="btn btn-dark btn-lg btn-watch" onclick="subscribe('{{ user.id }}')">Подписаться</button>
-          {% endif %}
-        {% endif %}
-      </div>
+      <div id="subscribe-btn-block" class="col-4 d-md-flex"></div>
       <div class="col-4 d-md-flex justify-content-md-end">
-        <span id="like-count" class="like-count"> {{ video.like_count }} </span>
-        <button id="like-button" class="btn btn-dark btn-sm btn-watch" onclick=addLike({{ video.id }})><i class="icon-thumbs-up"></i></button>
+        <button id="like-button" class="btn btn-dark btn-sm btn-like" onclick=addLike({{ video.id }})><i class="icon-thumbs-up"></i></button>
+        <div id="like-count" class="like-count"> {{ video.like_count }} </div>
       </div>
     </div>
 
     {% if video.description %}
       <div class="desc mt-1">
-        <h4 style="text-align: left">{{ video.description }}</h4>
+        <h4>{{ video.description }}</h4>
       </div>
     {% endif %}
   </div>
 {% endblock %}
 
 {% block script %}
-{#  <script src="{{ url_for('static', path='/js/video.js') }}"></script>#}
   <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        const token = getToken();
+        if (token) {
+          let subscribeButtonBlock = document.getElementById('subscribe-btn-block');
+          const responseUser = await fetch('/api/user/me', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+          });
+          let me = await responseUser.json();
+          if (me.id !== '{{ author.id }}') {
+              const responseSubscriptions = await fetch('/api/user/me/subscriptions', {
+                  headers: {
+                    'Authorization': `Bearer ${token}`
+                  }
+              });
+              let subscriptions = (await responseSubscriptions.json()).subscriptions;
+              let author = {
+                  id: '{{ author.id }}',
+                  username: '{{ author.username }}',
+                  picture: '{{ author.picture }}',
+              };
+              let subscribeButton = document.createElement('button')
+              subscribeButton.id = 'subscribe-button';
+              subscribeButton.className = 'btn btn-dark btn-sm btn-subscribe';
+              if (subscriptions.some(subscription => subscription.id === author.id)) {
+                  subscribeButton.onclick = (() => unsubscribe(author.id));
+                  subscribeButton.textContent = 'Отписаться';
+              } else {
+                  subscribeButton.onclick = (() => subscribe(author.id));
+                  subscribeButton.textContent = 'Подписаться';
+              }
+            subscribeButtonBlock.appendChild(subscribeButton);
+          }
+        }
+    });
+  </script>
 {% endblock %}
 
 

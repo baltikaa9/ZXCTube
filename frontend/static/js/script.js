@@ -1,15 +1,20 @@
-function authenticateUser (googleResponse) {
-    console.log(googleResponse.credential)
+function login (googleResponse) {
+    console.log(googleResponse.credential);
     fetch('/api/auth/login', {
       method: 'post',
       body: googleResponse.credential
     })
         .then(response => response.json())
         .then(token => token.access_token)
-        .then(token => saveToken(token))
-        .then(token => document.cookie = `Authorization=Bearer ${token}; max-age=1800`)
+        .then(token => saveToken(token));
+        // .then(token => document.cookie = `Authorization=Bearer ${token}; max-age=1800`)
 
-    window.location.reload()
+    window.location.reload();
+}
+
+function logout() {
+    removeToken();
+    window.location.reload();
 }
 
 function saveToken(token) {

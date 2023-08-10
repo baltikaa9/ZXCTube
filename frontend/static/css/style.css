@@ -23,6 +23,11 @@ a {
     text-decoration: none;
 }
 
+.logo {
+    font-weight: bold;
+    font-size: 36px
+}
+
 .desc {
     padding: 7px 5px;
     background-color: #272727;
@@ -38,11 +43,39 @@ a {
     color: var(--color-2);
 }
 
-.btn-watch {
+.btn-subscribe {
+    height: 40px;
+    width: 120px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.btn-like {
+    border-radius: 50% 0 0 50%;
     height: 40px;
 }
 
+.btn-logout {
+    height: 40px;
+    width: 60px;
+    border-radius: 20px;
+}
+
 .like-count {
+    width: 35px;
+    height: 40px;
     font-weight: bold;
-    margin: 8px 7px
+    /*background-color: #212529;*/
+    border: #3c4043 1px solid;
+    border-radius: 0 50% 50% 0;
+    text-align: center;
+    padding-top: 7px;
+}
+
+.user-link {
+    margin-right: 10px;
+}
+
+.user-pic {
+    border-radius: 50%;
 }
