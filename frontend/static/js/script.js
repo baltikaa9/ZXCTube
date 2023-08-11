@@ -8,14 +8,30 @@ function login (googleResponse) {
         .then(token => {
             saveToken(token.access_token);
             document.cookie = `refresh_token=${token.refresh_token}`
+            localStorage.setItem('session', token.session_id)
         });
 
     window.location.reload();
 }
 
+async function refresh() {
+    const refreshToken = getCookie('refresh_token');
+    const r = await fetch(`/api/auth/refresh?refresh_token=${refreshToken}`, {
+      method: 'post'
+    });
+    if (r.ok) {
+        const token = await r.json();
+        saveToken(token.access_token);
+        document.cookie = `refresh_token=${token.refresh_token}`;
+        localStorage.setItem('session', token.session_id)
+    }
+}
+
 async function logout() {
-    await interceptorAuth('/api/auth/logout', 'post');
+    let session = localStorage.getItem('session');
+    await interceptorAuth(`/api/auth/logout?session_id=${session}`, 'post');
     removeToken();
+    localStorage.removeItem('session')
     document.cookie = 'refresh_token=0; max-age=0';
 
     window.location.reload();
@@ -72,18 +88,6 @@ async function interceptorAuth(path, method='get') {
         });
     }
     return r;
-}
-
-async function refresh() {
-    const refreshToken = getCookie('refresh_token');
-    const r = await fetch(`/api/auth/refresh?refresh_token=${refreshToken}`, {
-      method: 'post'
-    });
-    if (r.ok) {
-        const token = await r.json();
-        saveToken(token.access_token);
-        document.cookie = `refresh_token=${token.refresh_token}`;
-    }
 }
 
 function getCookie(name) {

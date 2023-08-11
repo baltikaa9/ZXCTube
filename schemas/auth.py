@@ -1,11 +1,12 @@
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Token(BaseModel):
     access_token: str
     refresh_token: UUID
+    session_id: int = Field(gt=0)
 
 
 class RefreshToken(BaseModel):

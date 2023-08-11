@@ -1,3 +1,4 @@
+from typing import overload
 from uuid import UUID
 
 from pydantic import EmailStr
@@ -9,7 +10,7 @@ from schemas import RefreshToken
 
 
 class CRUDRefreshToken(CRUDBase[RefreshTokenDB, RefreshToken]):
-    async def get(self, token: UUID) -> RefreshTokenDB | None:
+    async def get_by_token(self, token: UUID) -> RefreshTokenDB | None:
         query = select(self.model).where(self.model.token == token)
         user = await self.session.execute(query)
         return user.scalar_one_or_none()

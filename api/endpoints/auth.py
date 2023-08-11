@@ -21,11 +21,10 @@ async def google_auth(
         session: AsyncSession = Depends(get_session),
         service: AuthService = Depends(),
 ) -> Token:
-    access_token, refresh_token = await service.google_auth(
+    return await service.google_auth(
         token_id=credential,
         session=session,
     )
-    return Token(access_token=access_token, refresh_token=refresh_token)
 
 
 @router.post('/refresh')
@@ -34,18 +33,18 @@ async def refresh(
         session: AsyncSession = Depends(get_session),
         service: AuthService = Depends(),
 ) -> Token:
-    access_token, refresh_token = await service.refresh_token(
+    return await service.refresh_token(
         refresh_token=refresh_token,
         session=session,
     )
-    return Token(access_token=access_token, refresh_token=refresh_token)
 
 
-@router.post('/logout')  # TODO: сделать logout не из всех сессий, а только из текущей (удалять из базы только токены данной сессии, а не все), а то это баг.
+@router.post('/logout', dependencies=[Depends(get_current_user_from_headers)])  # TODO: сделать logout не из всех сессий, а только из текущей (удалять из базы только токены данной сессии, а не все), а то это баг.
 async def logout(
-        current_user: UserDB = Depends(get_current_user_from_headers),
+        session_id: int,
+        # current_user: UserDB = ,
         session: AsyncSession = Depends(get_session),
         service: AuthService = Depends(),
 ) -> dict:
-    await service.logout(current_user.id, session)
+    await service.logout(session_id, session)
     return {'Success': True}
