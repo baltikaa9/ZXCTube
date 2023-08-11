@@ -1,7 +1,5 @@
-from typing import overload
 from uuid import UUID
 
-from pydantic import EmailStr
 from sqlalchemy import select, delete
 
 from crud import CRUDBase
