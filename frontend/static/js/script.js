@@ -50,10 +50,12 @@ function removeToken() {
     localStorage.removeItem('accessToken')
 }
 
-function addLike(video_id) {
-    interceptorAuth(`/api/video/${video_id}/like`, 'get')
-        .then(r => r.json())
-        .then(r => changeLikeCount(r.like_count))
+async function addLike(video_id) {
+    let r = await interceptorAuth(`/api/video/${video_id}/like`, 'get')
+    if (r.ok) {
+        r = await r.json();
+        changeLikeCount(r.like_count);
+    }
 }
 
 function changeLikeCount(likeCount) {

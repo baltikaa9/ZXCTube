@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.templating import Jinja2Templates
 
-from api.dependencies import get_session, get_current_user_from_headers
+from api.dependencies import get_session, get_current_user
 from models import UserDB
 from schemas import Token
 from services import AuthService
@@ -39,7 +39,7 @@ async def refresh(
     )
 
 
-@router.post('/logout', dependencies=[Depends(get_current_user_from_headers)])  # TODO: сделать logout не из всех сессий, а только из текущей (удалять из базы только токены данной сессии, а не все), а то это баг.
+@router.post('/logout', dependencies=[Depends(get_current_user)])  # TODO: сделать logout не из всех сессий, а только из текущей (удалять из базы только токены данной сессии, а не все), а то это баг.
 async def logout(
         session_id: int,
         # current_user: UserDB = ,

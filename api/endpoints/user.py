@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.dependencies import get_session, get_current_user_from_headers
+from api.dependencies import get_session, get_current_user
 from exceptions import UserNotFoundException
 from models import UserDB
 from schemas import GetVideo, UserRead
@@ -15,7 +15,7 @@ router = APIRouter(prefix='/user', tags=['User'])
 
 @router.get('/me')
 async def get_me(
-        current_user: UserDB = Depends(get_current_user_from_headers),
+        current_user: UserDB = Depends(get_current_user),
 ) -> UserRead:
     return UserRead.model_validate(current_user)
 
@@ -23,7 +23,7 @@ async def get_me(
 @router.get('/me/videos')
 async def get_my_videos(
         session: AsyncSession = Depends(get_session),
-        current_user: UserDB = Depends(get_current_user_from_headers),
+        current_user: UserDB = Depends(get_current_user),
         service: VideoService = Depends()
 ) -> list[GetVideo]:
     return await service.get_videos_by_user(current_user.id, session)
@@ -41,7 +41,7 @@ async def get_user_videos(
 @router.get('/me/subscribers')
 async def get_my_subscribers(
         session: AsyncSession = Depends(get_session),
-        current_user: UserDB = Depends(get_current_user_from_headers),
+        current_user: UserDB = Depends(get_current_user),
         service: SubscriptionService = Depends()
 ) -> SubscriberList:
     followers = await service.get_user_subscribers(current_user.id, session)
@@ -51,7 +51,7 @@ async def get_my_subscribers(
 @router.get('/me/subscriptions')
 async def get_my_subscriptions(
         session: AsyncSession = Depends(get_session),
-        current_user: UserDB = Depends(get_current_user_from_headers),
+        current_user: UserDB = Depends(get_current_user),
         service: SubscriptionService = Depends()
 ) -> SubscriptionList:
     subscriptions = await service.get_user_subscriptions(current_user.id, session)
@@ -89,7 +89,7 @@ async def get_subscriptions(
 # )
 
 
-@router.delete('/{user_id}', dependencies=[Depends(get_current_user_from_headers)])
+@router.delete('/{user_id}', dependencies=[Depends(get_current_user)])
 async def delete_user(
         user_id: UUID,
         session: AsyncSession = Depends(get_session),

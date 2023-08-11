@@ -39,18 +39,8 @@ class OAuth2ClientCredentials(OAuth2):
             auto_error=auto_error,
         )
 
-    async def get_headers_token(self, request: Request) -> str | None:
+    def __call__(self, request: Request):
         authorization = request.headers.get('Authorization')
-        return await self._get_token(authorization)
-
-    async def get_cookies_token(self, request: Request) -> str | None:
-        authorization = request.cookies.get('Authorization')
-        try:
-            return await self._get_token(authorization)
-        except HTTPException:
-            return None
-
-    async def _get_token(self, authorization: str | None) -> str | None:
         scheme, param = get_authorization_scheme_param(authorization)
         if not authorization or scheme.lower() != 'bearer':
             if self.auto_error:
@@ -67,27 +57,11 @@ class OAuth2ClientCredentials(OAuth2):
 oauth2_schema = OAuth2ClientCredentials(tokenUrl='/api/auth/token')
 
 
-async def get_current_user_from_cookies(
-        token: str | None = Depends(oauth2_schema.get_cookies_token),
+async def get_current_user(
+        token: str | None = Depends(oauth2_schema),
         session: AsyncSession = Depends(get_session),
 ) -> UserDB | None:
-    if token:
-        payload = await Security.decode_token(token)
-        return await _get_current_user(payload, session)
-
-
-async def get_current_user_from_headers(
-        token: str = Depends(oauth2_schema.get_headers_token),
-        session: AsyncSession = Depends(get_session),
-) -> UserDB:
     payload = await Security.decode_token(token)
-    return await _get_current_user(payload, session)
-
-
-async def _get_current_user(
-        payload: dict,
-        session: AsyncSession,
-) -> UserDB:
     user_id = payload.get('user_id')
     user_crud = CRUDUser(UserDB, session)
     user = await user_crud.get(user_id)
