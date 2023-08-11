@@ -39,7 +39,7 @@
       </div>
       <div id="subscribe-btn-block" class="col-4 d-md-flex"></div>
       <div class="col-4 d-md-flex justify-content-md-end">
-        <button id="like-button" class="btn btn-dark btn-sm btn-like" onclick=addLike({{ video.id }})><i class="icon-thumbs-up"></i></button>
+        <button id="like-button" class="btn btn-dark btn-sm btn-like" onclick="addLike({{ video.id }})"><i class="icon-thumbs-up"></i></button>
         <div id="like-count" class="like-count"> {{ video.like_count }} </div>
       </div>
     </div>
@@ -59,19 +59,11 @@
         const token = getToken();
         if (token) {
           let subscribeButtonBlock = document.getElementById('subscribe-btn-block');
-          const responseUser = await fetch('/api/user/me', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-          });
-          let me = await responseUser.json();
+          let responseSubscriptions = await interceptorAuth('/api/user/me/subscriptions');
+          responseSubscriptions = await responseSubscriptions.json();
+          let me = responseSubscriptions.user;
           if (me.id !== '{{ author.id }}') {
-              const responseSubscriptions = await fetch('/api/user/me/subscriptions', {
-                  headers: {
-                    'Authorization': `Bearer ${token}`
-                  }
-              });
-              let subscriptions = (await responseSubscriptions.json()).subscriptions;
+              let subscriptions = responseSubscriptions.subscriptions;
               let author = {
                   id: '{{ author.id }}',
                   username: '{{ author.username }}',

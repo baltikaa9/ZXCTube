@@ -5,21 +5,18 @@ function login (googleResponse) {
       body: googleResponse.credential
     })
         .then(response => response.json())
-        .then(token => token.access_token)
-        .then(token => saveToken(token));
-        // .then(token => document.cookie = `Authorization=Bearer ${token}; max-age=1800`)
+        .then(token => {
+            saveToken(token.access_token);
+            document.cookie = `refresh_token=${token.refresh_token}`
+        });
 
     window.location.reload();
 }
 
-function logout() {
-    fetch('/api/auth/logout', {
-        method: 'post',
-        headers: {
-            'Authorization': `Bearer ${getToken()}`
-        },
-    })
-        .then(() => removeToken());
+async function logout() {
+    await interceptorAuth('/api/auth/logout', 'post');
+    removeToken();
+    document.cookie = 'refresh_token=0; max-age=0';
 
     window.location.reload();
 }
@@ -38,14 +35,9 @@ function removeToken() {
 }
 
 function addLike(video_id) {
-    const token = getToken()
-    fetch(`/api/video/${video_id}/like`, {
-            headers: {
-                    'Authorization': `Bearer ${token}`
-            }
-    })
-        .then(r => r.ok ? r.json() : null)
-        .then(r_json => r_json ? changeLikeCount(r_json.like_count) : removeToken())
+    interceptorAuth(`/api/video/${video_id}/like`, 'get')
+        .then(r => r.json())
+        .then(r => changeLikeCount(r.like_count))
 }
 
 function changeLikeCount(likeCount) {
@@ -54,25 +46,49 @@ function changeLikeCount(likeCount) {
 }
 
 function subscribe(user_id) {
-    const token = getToken()
-    fetch(`/api/subscribe/?user=${user_id}`, {
-        method: 'post',
-        headers: {
-                    'Authorization': `Bearer ${token}`
-            }
-    })
-        .then(r => console.log(r.statusText))
-    window.location.reload()
+    interceptorAuth(`/api/subscribe/?user=${user_id}`, 'post')
+        .then(() => window.location.reload());
 }
 
 function unsubscribe(user_id) {
-    const token = getToken()
-    fetch(`/api/subscribe/?user=${user_id}`, {
-        method: 'delete',
+    interceptorAuth(`/api/subscribe/?user=${user_id}`, 'delete')
+        .then(() => window.location.reload());
+}
+
+async function interceptorAuth(path, method='get') {
+    let r = await fetch(path, {
+        method: method,
         headers: {
-                    'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${getToken()}`
+        }
+    });
+    if (r.status === 401) {
+        await refresh();
+        return await fetch(path, {
+            method: method,
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
             }
-    })
-        .then(r => console.log(r.statusText))
-    window.location.reload()
+        });
+    }
+    return r;
+}
+
+async function refresh() {
+    const refreshToken = getCookie('refresh_token');
+    const r = await fetch(`/api/auth/refresh?refresh_token=${refreshToken}`, {
+      method: 'post'
+    });
+    if (r.ok) {
+        const token = await r.json();
+        saveToken(token.access_token);
+        document.cookie = `refresh_token=${token.refresh_token}`;
+    }
+}
+
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([.$?*|{}()\[\]\\\/+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
 }

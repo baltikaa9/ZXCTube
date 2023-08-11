@@ -1,9 +1,8 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Form, Body
+from fastapi import APIRouter, Depends, Body
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.requests import Request
 from starlette.templating import Jinja2Templates
 
 from api.dependencies import get_session, get_current_user_from_headers
@@ -14,11 +13,6 @@ from services import AuthService
 router = APIRouter(prefix='/auth', tags=['Auth'])
 
 templates = Jinja2Templates(directory='frontend/templates')
-
-
-# @router.get('/')
-# async def google_auth(request: Request):
-#     return templates.TemplateResponse('auth.html', {'request': request})
 
 
 @router.post('/login')
@@ -34,7 +28,6 @@ async def google_auth(
     return Token(access_token=access_token, refresh_token=refresh_token)
 
 
-# @router.post('/refresh', dependencies=[Depends(get_current_user_from_headers)])
 @router.post('/refresh')
 async def refresh(
         refresh_token: UUID,
@@ -48,7 +41,7 @@ async def refresh(
     return Token(access_token=access_token, refresh_token=refresh_token)
 
 
-@router.post('/logout')
+@router.post('/logout')  # TODO: сделать logout не из всех сессий, а только из текущей (удалять из базы только токены данной сессии, а не все), а то это баг.
 async def logout(
         current_user: UserDB = Depends(get_current_user_from_headers),
         session: AsyncSession = Depends(get_session),

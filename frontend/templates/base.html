@@ -53,14 +53,10 @@
         const token = getToken();
         let myProfile = document.getElementById('my-profile');
         if (token) {
-            const response = await fetch('/api/user/me', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            const response = await interceptorAuth('/api/user/me');
             let me = await response.json();
             let myProfileLink = document.createElement('a');
-            myProfileLink.href = `http://localhost:8000/${me.id}`;
+            myProfileLink.href = `/${me.id}`;
             myProfileLink.className = 'user-link'
             let myProfilePic = document.createElement('img');
             myProfilePic.className = 'user-pic';
@@ -74,7 +70,7 @@
             let logoutButton = document.createElement('button');
             logoutButton.className = 'btn btn-dark btn-sm btn-logout';
             logoutButton.textContent = 'Выйти';
-            logoutButton.onclick = (() => logout());
+            logoutButton.onclick = (async () => await logout());
             myProfile.appendChild(logoutButton)
         }
     });
