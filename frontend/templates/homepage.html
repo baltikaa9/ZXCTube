@@ -5,17 +5,22 @@
 {% endblock %}
 
 {% block content %}
-  <div class="container mt-5">
+  <div class="container justify-content-center">
     <div class="row">
       {% for video in videos %}
-        <div class="col-3 mt-4">
-          <h3><a href="http://localhost:8000/{{ video.user.id }}" title="{{ video.user.username }}"><img class="user-pic" src="{{ video.user.picture }}" alt="" width="30px"></a>
-            <a href="http://localhost:8000/watch?v={{ video.id }}" title="{{ video.title }}">{{ video.title }}</a>
-          </h3>
+        <div class="col-xl-3 col-md-6 col-sm-12">
+          <div class="video">
+            <div class="preview">
+              <a href="http://localhost:8000/watch?v={{ video.id }}"> <img src="{{ video.user.picture }}" alt=" "> </a>
+            </div>
+            <h3><a href="http://localhost:8000/{{ video.user.id }}" title="{{ video.user.username }}"><img class="user-pic" src="{{ video.user.picture }}" alt=" " width="30px"></a>
+              <a href="http://localhost:8000/watch?v={{ video.id }}" title="{{ video.title }}">{{ video.title }}</a>
+            </h3>
 
-          <p class="username" style="margin-left: 37px;">
-            <a href="http://localhost:8000/{{ video.user.id }}" title="{{ video.user.username }}">{{ video.user.username }}</a>
-          </p>
+            <p class="username" style="margin-left: 37px;">
+              <a href="http://localhost:8000/{{ video.user.id }}" title="{{ video.user.username }}">{{ video.user.username }}</a>
+            </p>
+          </div>
         </div>
       {% endfor %}
     </div>

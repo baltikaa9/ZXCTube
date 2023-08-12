@@ -8,10 +8,14 @@
   <div class="container">
     <div class="row">
       {% for video in videos %}
-        <div class="col-3 mt-4">
+        <div class="col-xl-3 col-md-6 col-sm-12">
           <div class="video">
-            <h3><a class="video-title" href="http://localhost:8000/watch?v={{ video.id }}" title="{{ video.title }}">{{ video.title }}</a></h3>
-            <p class="video-description">{{ video.description }}</p>
+            <div class="preview">
+              <a href="http://localhost:8000/watch?v={{ video.id }}"> <img src="{{ user.picture }}" alt=" "> </a>
+            </div>
+            <h3><a href="http://localhost:8000/{{ video.user.id }}" title="{{ user.username }}"><img class="user-pic" src="{{ user.picture }}" alt=" " width="30px"></a>
+              <a href="http://localhost:8000/watch?v={{ video.id }}" title="{{ video.title }}">{{ video.title }}</a>
+            </h3>
           </div>
         </div>
       {% endfor %}

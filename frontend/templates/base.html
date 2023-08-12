@@ -47,12 +47,12 @@
 
 
   <header>
-    <div class="container">
-      <div class="row">
-        <div class="col-6 logo">
+    <div class="header">
+{#      <div class="row">#}
+        <div class="logo">
           <a href="/" title="Главная страница ZXCTube"><img src="{{ url_for('static', path='/img/logo.png') }}" alt="" height="48px">Tube</a>
         </div>
-        <div id="my-profile" class="col-6 pt-2 d-md-flex justify-content-md-end my-profile">
+        <div id="my-profile" class="my-profile">
             <div class="g_id_signin"
                data-type="standard"
                data-shape="pill"
@@ -63,14 +63,14 @@
                style="margin-left: -30px">
             </div>
         </div>
-      </div>
+{#      </div>#}
     </div>
   </header>
 
 
-  <div id="content">
+  <section id="content">
     {% block content %} {% endblock %}
-  </div>
+  </section>
 
   <script src="{{ url_for('static', path='/js/bootstrap.bundle.js') }}"></script>
   <script src="{{ url_for('static', path='/js/script.js') }}"></script>
@@ -79,28 +79,6 @@
         const token = getToken();
         let myProfile = document.getElementById('my-profile');
         if (token) {
-            {# ссылка на свой профиль #}
-            const response = await interceptorAuth('/api/user/me');
-            let me = await response.json();
-            let myProfileLink = document.createElement('a');
-            myProfileLink.href = `/${me.id}`;
-            myProfileLink.className = 'user-link'
-            let myProfilePic = document.createElement('img');
-            myProfilePic.className = 'user-pic';
-            myProfilePic.src = me.picture;
-            myProfilePic.width = 32;
-            myProfilePic.alt = '';
-            myProfileLink.appendChild(myProfilePic);
-            myProfile.innerHTML = '';
-            myProfile.appendChild(myProfileLink);
-
-            {# logout button #}
-            let logoutButton = document.createElement('button');
-            logoutButton.className = 'btn btn-dark btn-sm btn-logout';
-            logoutButton.textContent = 'Выйти';
-            logoutButton.onclick = (async () => await logout());
-            myProfile.appendChild(logoutButton);
-
             {# upload video button #}
             let uploadVideoButton = document.createElement('button');
             uploadVideoButton.className = 'btn btn-dark btn-sm btn-upload';
@@ -111,7 +89,29 @@
             document.getElementById('close-form-button').onclick = (() => {
                 document.getElementById('upload-video-form-block').style.display = 'none';
             })
+            myProfile.innerHTML = '';
             myProfile.appendChild(uploadVideoButton);
+
+            {# ссылка на свой профиль #}
+            const response = await interceptorAuth('/api/user/me');
+            let me = await response.json();
+            let myProfileLink = document.createElement('a');
+            myProfileLink.href = `/${me.id}`;
+            myProfileLink.className = 'user-link'
+            let myProfilePic = document.createElement('img');
+            myProfilePic.className = 'user-pic';
+            myProfilePic.src = me.picture;
+            myProfilePic.width = 32;
+            myProfilePic.alt = ' ';
+            myProfileLink.appendChild(myProfilePic);
+            myProfile.appendChild(myProfileLink);
+
+            {# logout button #}
+            let logoutButton = document.createElement('button');
+            logoutButton.className = 'btn btn-dark btn-sm btn-logout';
+            logoutButton.textContent = 'Выйти';
+            logoutButton.onclick = (async () => await logout());
+            myProfile.appendChild(logoutButton);
         }
     });
 

@@ -25,13 +25,34 @@ a {
 }
 
 header {
-    max-height: 56px;
+    position: fixed;
+    width: 100%;
+    min-height: 56px;
+    left: 0;
+    top: 0;
+    z-index: 50;
+    background-color: var(--color-1);
+}
+
+section {
+    padding: 130px 0;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px auto;
+    max-width: 1280px;
+    min-width: 100px;
 }
 
 .logo {
     font-weight: 500;
     font-size: 24px;
     max-height: 48px;
+    min-width: 200px;
+    padding: 0 15px;
 }
 
 .desc {
@@ -69,15 +90,17 @@ header {
     border-radius: 0 50% 50% 0;
     text-align: center;
     padding-top: 7px;
+    margin-right: 0;
 }
 
 /* my profile */
 
 .my-profile {
-    display: flex;
+    /*display: flex;*/
+    padding: 10px 15px;
 }
 
-.my-profile > *:not(:nth-child(2)) {
+.my-profile > *:not(:last-child) {
     margin-right: 15px;
 }
 
@@ -115,20 +138,20 @@ header {
     background-color: var(--color-1);
     color: var(--color-2);
     border: 1px solid #ccc;
-    box-shadow: 0 1px 2px 0 rgba(0,255,255,0.7),
-                1px 2px 4px 0 rgba(0,255,255,0.7),
-                2px 4px 8px 0 rgba(0,255,255,0.7),
-                2px 4px 16px 0 rgba(0,255,255,0.7);
+    /*box-shadow: 0 1px 2px 0 rgba(0,255,255,0.7),*/
+    /*            1px 2px 4px 0 rgba(0,255,255,0.7),*/
+    /*            2px 4px 8px 0 rgba(0,255,255,0.7),*/
+    /*            2px 4px 16px 0 rgba(0,255,255,0.7);*/
+    box-shadow: 0 1px 2px 0 rgba(163,88,232,0.7),
+                1px 2px 4px 0 rgba(163,88,232,0.7),
+                2px 4px 8px 0 rgba(163,88,232,0.7),
+                2px 4px 16px 0 rgba(163,88,232,0.7);
     z-index: 1000;
 }
 
 .upload-video-form-header {
     margin-bottom: 20px;
 }
-
-/*.video-title {*/
-/*    border: 1px solid ;*/
-/*}*/
 
 #upload-video-form > div {
     min-width: 300px;
@@ -162,4 +185,33 @@ header {
 
 #upload-video-form > div > label > input:focus {
     outline: none;
+}
+
+.video {
+    margin: 15px;
+}
+
+.preview {
+    max-height: 200px; /* Задаем высоту 200px для блока .preview */
+    display: flex; /* Используем flex для выравнивания содержимого внутри .preview */
+    margin-bottom: 10px;
+}
+
+.preview a {
+    display: block; /* Преобразуем ссылку в блочный элемент */
+    width: 100%; /* Задаем ширину 100% для ссылки */
+}
+
+.preview img {
+    width: 100%; /* Задаем ширину 100% для картинки внутри .preview */
+    height: 100%; /* Задаем высоту 100% для картинки внутри .preview */
+    /*object-fit: contain; !* Применяем object-fit: cover, чтобы картинка заполнила блок и при этом сохраняла пропорции *!*/
+    border-radius: 15px;
+}
+
+video {
+    box-shadow: 0 1px 20px 0 rgba(163,88,232,0.7),
+                1px 2px 40px 0 rgba(163,88,232,0.5),
+                2px 4px 80px 0 rgba(163,88,232,0.5),
+                2px 4px 160px 0 rgba(163,88,232,0.5);
 }
