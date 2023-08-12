@@ -73,20 +73,27 @@ function unsubscribe(user_id) {
         .then(() => window.location.reload());
 }
 
-async function interceptorAuth(path, method='get') {
+function uploadVideo(form) {
+    interceptorAuth('/api/video', 'post', new FormData(form))
+        .then();
+}
+
+async function interceptorAuth(path, method = 'get', body = null) {
     let r = await fetch(path, {
         method: method,
         headers: {
-            'Authorization': `Bearer ${getToken()}`
-        }
+            'Authorization': `Bearer ${getToken()}`,
+        },
+        body: body,
     });
     if (r.status === 401) {
         await refresh();
         return await fetch(path, {
             method: method,
             headers: {
-                'Authorization': `Bearer ${getToken()}`
-            }
+                'Authorization': `Bearer ${getToken()}`,
+            },
+            body: body,
         });
     }
     return r;

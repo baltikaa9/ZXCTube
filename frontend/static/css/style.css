@@ -3,6 +3,7 @@
     /*--color-2: #d1cdc7;*/
     --color-1: #0f0f0f;
     --color-2: #e3f1f1;
+    --color-3: #8a8a8a;
 }
 
 * {
@@ -23,9 +24,14 @@ a {
     text-decoration: none;
 }
 
+header {
+    max-height: 56px;
+}
+
 .logo {
-    font-weight: bold;
-    font-size: 36px
+    font-weight: 500;
+    font-size: 24px;
+    max-height: 48px;
 }
 
 .desc {
@@ -36,7 +42,7 @@ a {
 }
 
 .username {
-    color: #8a8a8a;
+    color: var(--color-3);
 }
 
 .username:hover {
@@ -55,27 +61,105 @@ a {
     height: 40px;
 }
 
-.btn-logout {
-    height: 40px;
-    width: 60px;
-    border-radius: 20px;
-}
-
 .like-count {
     width: 35px;
     height: 40px;
     font-weight: bold;
-    /*background-color: #212529;*/
     border: #3c4043 1px solid;
     border-radius: 0 50% 50% 0;
     text-align: center;
     padding-top: 7px;
 }
 
+/* my profile */
+
+.my-profile {
+    display: flex;
+}
+
+.my-profile > *:not(:nth-child(2)) {
+    margin-right: 15px;
+}
+
+.btn-upload {
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    order: 1;
+}
+
 .user-link {
-    margin-right: 10px;
+    order: 2;
+}
+
+.btn-logout {
+    height: 32px;
+    width: 50px;
+    border-radius: 20px;
+    order: 3;
 }
 
 .user-pic {
     border-radius: 50%;
+}
+
+/* upload video */
+
+.upload-video-form-block {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: var(--color-1);
+    color: var(--color-2);
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 2px 0 rgba(0,255,255,0.7),
+                1px 2px 4px 0 rgba(0,255,255,0.7),
+                2px 4px 8px 0 rgba(0,255,255,0.7),
+                2px 4px 16px 0 rgba(0,255,255,0.7);
+    z-index: 1000;
+}
+
+.upload-video-form-header {
+    margin-bottom: 20px;
+}
+
+/*.video-title {*/
+/*    border: 1px solid ;*/
+/*}*/
+
+#upload-video-form > div {
+    min-width: 300px;
+    margin: 15px 0;
+    border: 1px solid var(--color-3);;
+    border-radius: 5px;
+    padding: 3px 5px;
+}
+
+#upload-video-form > div:focus-within {
+    border: 1px solid var(--color-2);
+}
+
+#upload-video-form > div > label {
+    min-width: inherit;
+    display: block;
+    color: var(--color-3);
+}
+
+#upload-video-form > div > label:focus-within {
+    color: var(--color-2);
+}
+
+#upload-video-form > div > label > input {
+    margin-top: 5px;
+    min-width: inherit;
+    display: block;
+    background-color: var(--color-1);
+    color: var(--color-2);
+}
+
+#upload-video-form > div > label > input:focus {
+    outline: none;
 }

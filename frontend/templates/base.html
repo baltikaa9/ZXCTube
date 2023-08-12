@@ -19,14 +19,40 @@
   >
   </div>
 
+  <div id="upload-video-form-block" class="upload-video-form-block">
+    <h3 class="upload-video-form-header">Загрузка видео</h3>
+    <form id="upload-video-form" enctype="multipart/form-data">
+      <div class="video-title">
+        <label for="upload-video-title">
+          <span>Название</span>
+          <input id="upload-video-title" type="text" name="title" placeholder="Название" required>
+        </label>
+      </div>
+      <div class="video-description">
+        <label for="upload-video-description">
+          <span>Описание</span>
+          <input id="upload-video-description" type="text" name="description" placeholder="Расскажите о чем ваше видео">
+        </label>
+      </div>
+      <div class="video-file">
+        <label for="upload-video-file">
+          <span>Выбрать файл</span>
+          <input id="upload-video-file" type="file" name="file" accept="video/mp4">
+        </label>
+      </div>
+      <button class="btn btn-dark" type="submit">Загрузить</button>
+      <button class="btn btn-dark" type="button" id="close-form-button">Закрыть</button>
+    </form>
+  </div>
+
 
   <header>
     <div class="container">
       <div class="row">
         <div class="col-6 logo">
-          <a href="/" title="Главная страница ZXCTube"><img src="{{ url_for('static', path='/img/logo.png') }}" alt="" width="100px">Tube</a>
+          <a href="/" title="Главная страница ZXCTube"><img src="{{ url_for('static', path='/img/logo.png') }}" alt="" height="48px">Tube</a>
         </div>
-        <div id="my-profile" class="col-6 pt-3 d-md-flex justify-content-md-end">
+        <div id="my-profile" class="col-6 pt-2 d-md-flex justify-content-md-end my-profile">
             <div class="g_id_signin"
                data-type="standard"
                data-shape="pill"
@@ -53,6 +79,7 @@
         const token = getToken();
         let myProfile = document.getElementById('my-profile');
         if (token) {
+            {# ссылка на свой профиль #}
             const response = await interceptorAuth('/api/user/me');
             let me = await response.json();
             let myProfileLink = document.createElement('a');
@@ -61,19 +88,40 @@
             let myProfilePic = document.createElement('img');
             myProfilePic.className = 'user-pic';
             myProfilePic.src = me.picture;
-            myProfilePic.width = 40;
+            myProfilePic.width = 32;
             myProfilePic.alt = '';
             myProfileLink.appendChild(myProfilePic);
             myProfile.innerHTML = '';
             myProfile.appendChild(myProfileLink);
 
+            {# logout button #}
             let logoutButton = document.createElement('button');
             logoutButton.className = 'btn btn-dark btn-sm btn-logout';
             logoutButton.textContent = 'Выйти';
             logoutButton.onclick = (async () => await logout());
-            myProfile.appendChild(logoutButton)
+            myProfile.appendChild(logoutButton);
+
+            {# upload video button #}
+            let uploadVideoButton = document.createElement('button');
+            uploadVideoButton.className = 'btn btn-dark btn-sm btn-upload';
+            uploadVideoButton.textContent = '+';
+            uploadVideoButton.onclick = (() => {
+                document.getElementById('upload-video-form-block').style.display = 'block';
+            });
+            document.getElementById('close-form-button').onclick = (() => {
+                document.getElementById('upload-video-form-block').style.display = 'none';
+            })
+            myProfile.appendChild(uploadVideoButton);
         }
     });
+
+    let formData  = document.getElementById('upload-video-form');
+    formData.onsubmit = async (e) => {
+        e.preventDefault();
+        uploadVideo(formData);
+        document.getElementById('upload-video-form-block').style.display = 'none';
+        {#window.location.reload();#}
+    };
   </script>
   {% block script %} {% endblock %}
 </body>
