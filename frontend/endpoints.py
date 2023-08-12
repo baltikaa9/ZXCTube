@@ -17,6 +17,11 @@ router = APIRouter(tags=['Frontend'])
 templates = Jinja2Templates(directory='frontend/templates')
 
 
+@router.get('ping')
+async def ping():
+    return {'success': True}
+
+
 @router.get('/watch', response_class=HTMLResponse)
 async def watch_video(
         video_id: Annotated[int, Query(alias='v')],
