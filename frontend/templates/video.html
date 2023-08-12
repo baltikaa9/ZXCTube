@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <title>{{ video.title }}</title>
+  <link rel="stylesheet" href="https://vjs.zencdn.net/8.3.0/video-js.css">
+{% endblock %}
+
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <video
+          id="my-video"
+          class="video-js"
+          controls
+          preload="auto"
+          width="1280"
+          height="720"
+          data-setup="{}"
+        >
+          <source src="/api/video/{{ video.id }}" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-6">
+        <h1>{{ video.title }}</h1>
+      </div>
+
+    </div>
+
+    <div class="row" style="height: 60px">
+      <div class="col-4 d-md-flex">
+        <a class="username" href="http://localhost:8000/{{ author.id }}" title="{{ author.username }}">
+          <img class="user-pic" src="{{ author.picture }}" width="40px" alt=" "> {{ author.username }}
+        </a>
+      </div>
+      <div id="subscribe-btn-block" class="col-4 d-md-flex"></div>
+      <div class="col-4 d-md-flex justify-content-md-end">
+        <button id="like-button" class="btn btn-dark btn-sm btn-like" onclick="addLike({{ video.id }})"><i class="icon-thumbs-up"></i></button>
+        <div id="like-count" class="like-count"> {{ video.like_count }} </div>
+      </div>
+    </div>
+
+    {% if video.description %}
+      <div class="desc mt-1">
+        <h4>{{ video.description }}</h4>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        const token = getToken();
+        if (token) {
+          let subscribeButtonBlock = document.getElementById('subscribe-btn-block');
+          let responseSubscriptions = await interceptorAuth('/api/user/me/subscriptions');
+          responseSubscriptions = await responseSubscriptions.json();
+          let me = responseSubscriptions.user;
+          if (me.id !== '{{ author.id }}') {
+              let subscriptions = responseSubscriptions.subscriptions;
+              let author = {
+                  id: '{{ author.id }}',
+                  username: '{{ author.username }}',
+                  picture: '{{ author.picture }}',
+              };
+              let subscribeButton = document.createElement('button')
+              subscribeButton.id = 'subscribe-button';
+              subscribeButton.className = 'btn btn-dark btn-sm btn-subscribe';
+              if (subscriptions.some(subscription => subscription.id === author.id)) {
+                  subscribeButton.onclick = (() => unsubscribe(author.id));
+                  subscribeButton.textContent = 'Отписаться';
+              } else {
+                  subscribeButton.onclick = (() => subscribe(author.id));
+                  subscribeButton.textContent = 'Подписаться';
+              }
+            subscribeButtonBlock.appendChild(subscribeButton);
+          }
+        }
+    });
+  </script>
+{% endblock %}
+
+
+

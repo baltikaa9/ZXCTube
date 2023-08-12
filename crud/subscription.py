@@ -12,11 +12,10 @@ class CRUDSubscription(CRUDBase[SubscriptionDB, SubscriberCreate]):
     async def delete(self, subscription: SubscriberCreate) -> SubscriptionDB:
         query = delete(self.model) \
             .where((self.model.user == subscription.user) & (self.model.subscriber == subscription.subscriber)) \
-            .returning(SubscriptionDB)
+            .returning(self.model)
         subscription = await self.session.execute(query)
         await self.session.commit()
-        subscription = subscription.scalar_one_or_none()
-        return subscription
+        return subscription.scalar_one_or_none()
 
     async def get_user_subscribers(self, user: UUID) -> list[SubscriptionDB]:
         query = select(self.model).where(self.model.user == user)

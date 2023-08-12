@@ -8,8 +8,11 @@ from schemas import UploadVideo, CreateLikeOnVideo
 
 
 class CRUDVideo(CRUDBase[VideoDB, UploadVideo]):
-    async def get_by_user(self, user_id: UUID) -> list[VideoDB]:
-        query = select(self.model).where(self.model.user == user_id)
+    async def get_all(self, user_id: UUID | None = None) -> list[VideoDB]:
+        if user_id:
+            query = select(self.model).where(self.model.user == user_id)
+        else:
+            query = select(self.model)
         videos = await self.session.execute(query)
         return [video[0] for video in videos.all()]
 

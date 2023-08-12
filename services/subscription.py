@@ -1,10 +1,9 @@
 from uuid import UUID
 
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud import CRUDUser, CRUDSubscription
-from api.dependencies import get_session
 from exceptions import UserNotFoundException
 from models import UserDB, SubscriptionDB
 from schemas import SubscriberCreate, UserRead, SubscriberList, SubscriptionList
@@ -57,7 +56,7 @@ class SubscriptionService:
     @staticmethod
     async def get_user_subscribers(
         user: UUID,
-        session: AsyncSession = Depends(get_session),
+        session: AsyncSession,
     ) -> SubscriberList:
         crud_user = CRUDUser(UserDB, session)
         user_db = await crud_user.get(user)
@@ -72,7 +71,7 @@ class SubscriptionService:
     @staticmethod
     async def get_user_subscriptions(
         user: UUID,
-        session: AsyncSession = Depends(get_session),
+        session: AsyncSession,
     ) -> SubscriptionList:
         crud_user = CRUDUser(UserDB, session)
         user_db = await crud_user.get(user)

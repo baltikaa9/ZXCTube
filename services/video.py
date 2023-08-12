@@ -57,24 +57,28 @@ class VideoService:
     async def delete_video(video_id, session: AsyncSession) -> GetVideo | None:
         crud_video = CRUDVideo(VideoDB, session)
         video = await crud_video.delete(video_id)
-        if not video:
-            raise VideoNotFoundException()
-        file_name = video.file
-        os.remove(file_name)
-        return GetVideo.model_validate(video)
+        if video:
+            file_name = video.file
+            os.remove(file_name)
+            return GetVideo.model_validate(video)
 
     @staticmethod
     async def get_video(video_id: int, session: AsyncSession) -> GetVideo | None:
         crud_video = CRUDVideo(VideoDB, session)
         video = await crud_video.get(video_id)
-        if not video:
-            raise VideoNotFoundException()
-        return GetVideo.model_validate(video)
+        if video:
+            return GetVideo.model_validate(video)
 
     @staticmethod
     async def get_videos_by_user(user_id: UUID, session: AsyncSession) -> list[GetVideo]:
         crud_video = CRUDVideo(VideoDB, session)
-        videos = await crud_video.get_by_user(user_id)
+        videos = await crud_video.get_all(user_id)
+        return [GetVideo.model_validate(video) for video in videos]
+
+    @staticmethod
+    async def get_all_videos(session: AsyncSession) -> list[GetVideo]:
+        crud_video = CRUDVideo(VideoDB, session)
+        videos = await crud_video.get_all()
         return [GetVideo.model_validate(video) for video in videos]
 
     @staticmethod
@@ -102,6 +106,8 @@ class VideoService:
 
     async def open_file(self, video_id: int, request: Request, session: AsyncSession):
         video = await self.get_video(video_id, session)
+        if not video:
+            raise VideoNotFoundException()
 
         path = Path(video.file)
         file = path.open('rb')
