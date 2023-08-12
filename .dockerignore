@@ -1,0 +1,15 @@
+# Common
+README.md
+CHANGELOG.md
+docker-compose.yml
+Dockerfile
+venv
+LICENSE
+
+# git
+.git
+.gitattributes
+.gitignore
+
+# JetBrains
+.idea

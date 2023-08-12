@@ -8,7 +8,7 @@ from google.oauth2 import id_token
 from jwt import ExpiredSignatureError, PyJWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.config import GOOGLE_CLIENT_ID, ACCESS_TOKEN_EXPIRE_MINUTES, ACCESS_TOKEN_JWT_SUBJECT, SECRET_KEY, ALGORITHM
+from config import GOOGLE_CLIENT_ID, ACCESS_TOKEN_EXPIRE_MINUTES, ACCESS_TOKEN_JWT_SUBJECT, SECRET_KEY, ALGORITHM
 from backend.crud import CRUDRefreshToken
 from backend.models import RefreshTokenDB
 from backend.schemas import RefreshToken, Token

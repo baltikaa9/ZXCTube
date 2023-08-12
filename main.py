@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from starlette.staticfiles import StaticFiles
 
 from backend import api_router
+from config import HOST
 from frontend import fr_router
 
 app = FastAPI(title='ZXCTube')
@@ -14,4 +15,4 @@ app.mount('/frontend/static', StaticFiles(directory='frontend/static'), name='st
 
 
 if __name__ == '__main__':
-    uvicorn.run('main:app', reload=True, port=8000)
+    uvicorn.run('main:app', port=8000, host=HOST)

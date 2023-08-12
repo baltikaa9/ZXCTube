@@ -40,7 +40,7 @@ class VideoService:
 
     @staticmethod
     def _generate_file_name(user_id: UUID, file_format: str):
-        return f'media/{user_id}_{uuid4()}.{file_format}'
+        return f'data/media/{user_id}_{uuid4()}.{file_format}'
 
     @staticmethod
     def _write_video(path: str, video: UploadFile):
