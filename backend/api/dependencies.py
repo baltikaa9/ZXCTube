@@ -7,10 +7,10 @@ from fastapi.security.utils import get_authorization_scheme_param
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
-from crud import CRUDUser
-from db import async_session
-from models import UserDB
-from services import Security
+from backend.crud import CRUDUser
+from backend.db import async_session
+from backend.models import UserDB
+from backend.services import Security
 
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:

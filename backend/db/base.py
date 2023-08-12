@@ -1,6 +1,5 @@
 # imports for alembic
-from db import Base
+from backend.db import Base
 from models import UserDB
-from models import VideoLikeDB, VideoDB
 from models import SubscriptionDB
 from models import RefreshTokenDB

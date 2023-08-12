@@ -2,9 +2,9 @@ from uuid import UUID
 
 from sqlalchemy import select, update
 
-from crud import CRUDBase
-from models import VideoDB, VideoLikeDB
-from schemas import UploadVideo, CreateLikeOnVideo
+from backend.crud import CRUDBase
+from backend.models import VideoDB, VideoLikeDB
+from backend.schemas import UploadVideo, CreateLikeOnVideo
 
 
 class CRUDVideo(CRUDBase[VideoDB, UploadVideo]):

@@ -3,12 +3,12 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.dependencies import get_session, get_current_user
-from exceptions import UserNotFoundException
-from models import UserDB
-from schemas import GetVideo, UserRead
-from schemas import SubscriberList, SubscriptionList
-from services import UserService, VideoService, SubscriptionService
+from backend.api.dependencies import get_session, get_current_user
+from backend.exceptions import UserNotFoundException
+from backend.models import UserDB
+from backend.schemas import GetVideo, UserRead
+from backend.schemas import SubscriberList, SubscriptionList
+from backend.services import UserService, VideoService, SubscriptionService
 
 router = APIRouter(prefix='/user', tags=['User'])
 

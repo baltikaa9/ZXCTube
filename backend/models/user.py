@@ -3,7 +3,7 @@ from uuid import uuid4, UUID
 from fastapi_users_db_sqlalchemy import GUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from db import Base
+from backend.db import Base
 
 
 # class UserDB(SQLAlchemyBaseUserTableUUID, Base):

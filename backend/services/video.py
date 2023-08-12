@@ -1,7 +1,7 @@
 import os
 import shutil
 from pathlib import Path
-from typing import Type, Generator, IO
+from typing import Generator, IO
 from uuid import UUID, uuid4
 
 import aiofiles
@@ -10,10 +10,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.background import BackgroundTasks
 from starlette.requests import Request
 
-from crud import CRUDVideo, CRUDVideoLike
-from exceptions import VideoNotFoundException
-from models import UserDB, VideoDB, VideoLikeDB
-from schemas import UploadVideo, GetVideo, CreateLikeOnVideo
+from backend.crud import CRUDVideo, CRUDVideoLike
+from backend.exceptions import VideoNotFoundException
+from backend.models import UserDB, VideoDB, VideoLikeDB
+from backend.schemas import UploadVideo, GetVideo, CreateLikeOnVideo
 
 
 class VideoService:

@@ -4,8 +4,8 @@ from uuid import UUID
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from db import Base
-from models import UserDB
+from backend.db import Base
+from backend.models import UserDB
 
 
 class VideoDB(Base):

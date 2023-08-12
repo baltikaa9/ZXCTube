@@ -1,14 +1,11 @@
-from typing import Type
 from uuid import UUID
 
-from fastapi import HTTPException
 from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from crud import CRUDUser
-from exceptions import UserNotFoundException
-from models import UserDB
-from schemas import UserRead, UserCreate
+from backend.crud import CRUDUser
+from backend.models import UserDB
+from backend.schemas import UserRead, UserCreate
 
 
 class UserService:

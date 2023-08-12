@@ -1,9 +1,9 @@
 from pydantic import EmailStr
 from sqlalchemy import select
 
-from crud import CRUDBase
-from models import UserDB
-from schemas import UserCreate
+from backend.crud import CRUDBase
+from backend.models import UserDB
+from backend.schemas import UserCreate
 
 
 class CRUDUser(CRUDBase[UserDB, UserCreate]):

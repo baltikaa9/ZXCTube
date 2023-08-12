@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.staticfiles import StaticFiles
 
-from api import api_router
+from backend import api_router
 from frontend import fr_router
 
 app = FastAPI(title='ZXCTube')

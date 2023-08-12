@@ -4,13 +4,13 @@ from fastapi import APIRouter, UploadFile, Form, File, Depends, BackgroundTasks,
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.dependencies import get_current_user
-from api.dependencies import get_session
-from exceptions import VideoNotFoundException
-from models import UserDB
-from schemas import GetVideo
-from schemas import Message
-from services import VideoService
+from backend.api.dependencies import get_current_user
+from backend.api.dependencies import get_session
+from backend.exceptions import VideoNotFoundException
+from backend.models import UserDB
+from backend.schemas import GetVideo
+from backend.schemas import Message
+from backend.services import VideoService
 
 router = APIRouter(prefix='/video', tags=['Video'])
 

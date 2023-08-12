@@ -3,9 +3,9 @@ from uuid import UUID
 
 from sqlalchemy import delete, select
 
-from crud import CRUDBase
-from models import SubscriptionDB
-from schemas import SubscriberCreate
+from backend.crud import CRUDBase
+from backend.models import SubscriptionDB
+from backend.schemas import SubscriberCreate
 
 
 class CRUDSubscription(CRUDBase[SubscriptionDB, SubscriberCreate]):

@@ -2,7 +2,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from schemas import UserRead
+from backend.schemas import UserRead
 
 
 class UploadVideo(BaseModel):

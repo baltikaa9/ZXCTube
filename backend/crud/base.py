@@ -4,7 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db import Base
+from backend.db import Base
 
 ModelType = TypeVar("ModelType", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)

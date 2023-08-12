@@ -3,10 +3,10 @@ from uuid import UUID
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from crud import CRUDUser, CRUDSubscription
-from exceptions import UserNotFoundException
-from models import UserDB, SubscriptionDB
-from schemas import SubscriberCreate, UserRead, SubscriberList, SubscriptionList
+from backend.crud import CRUDUser, CRUDSubscription
+from backend.exceptions import UserNotFoundException
+from backend.models import UserDB, SubscriptionDB
+from backend.schemas import SubscriberCreate, UserRead, SubscriberList, SubscriptionList
 
 
 class SubscriptionService:

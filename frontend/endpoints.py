@@ -7,10 +7,10 @@ from starlette.requests import Request
 from starlette.responses import RedirectResponse, HTMLResponse
 from starlette.templating import Jinja2Templates
 
-from api.dependencies import get_session
-from exceptions import UserNotFoundException
-from schemas import GetVideoForHTML
-from services import VideoService, UserService
+from backend.api.dependencies import get_session
+from backend.exceptions import UserNotFoundException
+from backend.schemas import GetVideoForHTML
+from backend.services import VideoService, UserService
 
 router = APIRouter(tags=['Frontend'])
 

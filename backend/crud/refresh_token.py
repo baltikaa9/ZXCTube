@@ -2,9 +2,9 @@ from uuid import UUID
 
 from sqlalchemy import select, delete
 
-from crud import CRUDBase
-from models import RefreshTokenDB
-from schemas import RefreshToken
+from backend.crud import CRUDBase
+from backend.models import RefreshTokenDB
+from backend.schemas import RefreshToken
 
 
 class CRUDRefreshToken(CRUDBase[RefreshTokenDB, RefreshToken]):
