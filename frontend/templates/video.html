@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-  <title>{{ video.title }}</title>
+  <title>{{ data.video.title }}</title>
   <link rel="stylesheet" href="https://vjs.zencdn.net/8.3.0/video-js.css">
 {% endblock %}
 
@@ -19,34 +19,34 @@
           height="720"
           data-setup="{}"
         >
-          <source src="/api/video/{{ video.id }}" type="video/mp4">
+          <source src="/api/video/{{ data.video.id }}" type="video/mp4">
         </video>
       </div>
     </div>
 
     <div class="row">
       <div class="col-6">
-        <h1>{{ video.title }}</h1>
+        <h1>{{ data.video.title }}</h1>
       </div>
 
     </div>
 
     <div class="row" style="height: 60px">
       <div class="col-4 d-md-flex">
-        <a class="username" href="/{{ author.id }}" title="{{ author.username }}">
-          <img class="user-pic" src="{{ author.picture }}" width="40px" alt=" "> {{ author.username }}
+        <a class="username" href="/{{ data.author.id }}" title="{{ data.author.username }}">
+          <img class="user-pic" src="{{ data.author.picture }}" width="40px" alt=" "> {{ data.author.username }}
         </a>
       </div>
       <div id="subscribe-btn-block" class="col-4 d-md-flex"></div>
       <div class="col-4 d-md-flex justify-content-md-end">
-        <button id="like-button" class="btn btn-dark btn-sm btn-like" onclick="addLike({{ video.id }})"><i class="icon-thumbs-up"></i></button>
-        <div id="like-count" class="like-count"> {{ video.like_count }} </div>
+        <button id="like-button" class="btn btn-dark btn-sm btn-like" onclick="addLike({{ data.video.id }})"><i class="icon-thumbs-up"></i></button>
+        <div id="like-count" class="like-count"> {{ data.video.like_count }} </div>
       </div>
     </div>
 
-    {% if video.description %}
+    {% if data.video.description %}
       <div class="desc mt-1">
-        <h4>{{ video.description }}</h4>
+        <h4>{{ data.video.description }}</h4>
       </div>
     {% endif %}
   </div>
@@ -62,12 +62,12 @@
           let responseSubscriptions = await interceptorAuth('/api/user/me/subscriptions');
           responseSubscriptions = await responseSubscriptions.json();
           let me = responseSubscriptions.user;
-          if (me.id !== '{{ author.id }}') {
+          if (me.id !== '{{ data.author.id }}') {
               let subscriptions = responseSubscriptions.subscriptions;
               let author = {
-                  id: '{{ author.id }}',
-                  username: '{{ author.username }}',
-                  picture: '{{ author.picture }}',
+                  id: '{{ data.author.id }}',
+                  username: '{{ data.author.username }}',
+                  picture: '{{ data.author.picture }}',
               };
               let subscribeButton = document.createElement('button')
               subscribeButton.id = 'subscribe-button';

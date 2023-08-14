@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
 {% block head %}
-  <title>{{ user.username }}</title>
+  <title>{{ data.user.username }}</title>
 {% endblock %}
 
 {% block content %}
   <div class="container">
     <div class="row">
-      {% for video in videos %}
+      {% for video in data.videos %}
         <div class="col-xl-3 col-md-6 col-sm-12">
           <div class="video">
             <div class="preview">
-              <a href="/watch?v={{ video.id }}"> <img src="{{ user.picture }}" alt=" "> </a>
+              <a href="/watch?v={{ video.id }}"> <img src="{{ data.user.picture }}" alt=" "> </a>
             </div>
             <h3>
               <a href="/watch?v={{ video.id }}" title="{{ video.title }}">{{ video.title }}</a>

@@ -11,7 +11,8 @@
 <body>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <div id="g_id_onload"
-     data-client_id="997307486852-nrh7de9jt8bg15agf6sd086v8ji016qi.apps.googleusercontent.com"
+{#     data-client_id="997307486852-nrh7de9jt8bg15agf6sd086v8ji016qi.apps.googleusercontent.com"#}
+     data-client_id="{{ data.client_id }}"
      data-context="signin"
      data-ux_mode="popup"
      data-callback="login"

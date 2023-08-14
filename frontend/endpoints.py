@@ -11,10 +11,16 @@ from backend.api.dependencies import get_session
 from backend.exceptions import UserNotFoundException
 from backend.schemas import GetVideoForHTML
 from backend.services import VideoService, UserService
+from config import GOOGLE_CLIENT_ID
 
 router = APIRouter(tags=['Frontend'])
 
 templates = Jinja2Templates(directory='frontend/templates')
+
+
+class Data:
+    def __init__(self, **kwargs):
+        [setattr(self, field, value) for field, value in kwargs.items()]
 
 
 @router.get('/ping')
@@ -32,12 +38,14 @@ async def watch_video(
 ):
     video = await video_service.get_video(video_id, session)
     if not video:
-        # return RedirectResponse('http://localhost:8000/video/not_found')
+        # return RedirectResponse('/video/not_found')
         return RedirectResponse('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
     author = await user_service.get_user(video.user, session)
+    data = Data(video=video, author=author, client_id=GOOGLE_CLIENT_ID)
     return templates.TemplateResponse(
         'video.html',
-        {'request': request, 'video': video, 'author': author}
+        # {'request': request, 'video': video, 'author': author}
+        {'request': request, 'data': data}
     )
 
 
@@ -58,9 +66,11 @@ async def get_user(
     if not user:
         raise UserNotFoundException()
     videos = await video_service.get_videos_by_user(user_id, session)
+    data = Data(videos=videos, user=user, client_id=GOOGLE_CLIENT_ID)
     return templates.TemplateResponse(
         'user.html',
-        {'request': request, 'user': user, 'videos': videos}
+        # {'request': request, 'user': user, 'videos': videos}
+        {'request': request, 'data': data}
     )
 
 
@@ -80,7 +90,9 @@ async def get_homepage(
         like_count=video.like_count,
         user=await user_service.get_user(video.user, session),
     ) for video in videos]
+    data = Data(videos=videos, client_id=GOOGLE_CLIENT_ID)
     return templates.TemplateResponse(
         'homepage.html',
-        {'request': request, 'videos': videos}
+        # {'request': request, 'videos': videos}
+        {'request': request, 'data': data}
     )
