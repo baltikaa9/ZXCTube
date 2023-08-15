@@ -74,7 +74,7 @@ function unsubscribe(user_id) {
 }
 
 function uploadVideo(form) {
-    interceptorAuth('/api/video', 'post', new FormData(form))
+    interceptorAuth('/api/video/', 'post', new FormData(form))
         .then();
 }
 
