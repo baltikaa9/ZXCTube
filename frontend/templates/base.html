@@ -3,15 +3,18 @@
 <head>
   <meta charset="UTF-8">
   {% block head %} {% endblock %}
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/bootstrap.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/fontello.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/style.css') }}">
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/img/zxc.ico') }}">
+{#  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/bootstrap.css') }}">#}
+{#  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/fontello.css') }}">#}
+{#  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/style.css') }}">#}
+{#  <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/img/zxc.ico') }}">#}
+  <link rel="stylesheet" type="text/css" href="https://zxctube.ru/frontend/static/css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="https://zxctube.ru/frontend/static/css/fontello.css">
+  <link rel="stylesheet" type="text/css" href="https://zxctube.ru/frontend/static/css/style.css">
+  <link rel="icon" type="image/x-icon" href="https://zxctube.ru/frontend/static/img/zxc.ico">
 </head>
 <body>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <div id="g_id_onload"
-{#     data-client_id="997307486852-nrh7de9jt8bg15agf6sd086v8ji016qi.apps.googleusercontent.com"#}
      data-client_id="{{ data.client_id }}"
      data-context="signin"
      data-ux_mode="popup"
