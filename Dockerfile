@@ -16,4 +16,4 @@ RUN python3 -m pip install --user --upgrade pip && \
 COPY . .
 WORKDIR .
 
-CMD ["python", "main.py"]
+CMD ["uvicorn", "main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8000", "--forwarded-allow-ips='*'"]
