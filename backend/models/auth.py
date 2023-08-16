@@ -13,4 +13,4 @@ class RefreshTokenDB(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[UUID] = mapped_column(ForeignKey(UserDB.id), nullable=False)
-    token: Mapped[UUID] = mapped_column(GUID(), unique=True, nullable=False)
+    token: Mapped[UUID] = mapped_column(unique=True, nullable=False)

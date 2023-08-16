@@ -1,4 +1,4 @@
-from typing import Annotated, Any
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
@@ -17,14 +17,6 @@ router = APIRouter(tags=['Frontend'])
 
 templates = Jinja2Templates(directory='frontend/templates')
 
-def https_url_for(request: Request, name: str) -> str:
-
-    http_url = request.url_for(name)
-    print(http_url)
-    # Replace 'http' with 'https'
-    return http_url.replace("http", "https", 1)
-
-templates.env.globals["https_url_for"] = https_url_for
 
 class Data:
     def __init__(self, **kwargs):
