@@ -13,9 +13,9 @@
             <div class="preview">
               <a href="/watch?v={{ video.id }}">
                 {% if video.preview %}
-                  <img src="/api/image/preview/{{ video.preview }}" alt=" ">
+                  <img class="preview-img" src="/api/image/preview/{{ video.preview }}" alt=" ">
                 {% else %}
-                  <img src="{{ video.user.picture }}" alt=" ">
+                  <img class="preview-img" src="{{ video.user.picture }}" alt=" ">
                 {% endif %}
               </a>
             </div>

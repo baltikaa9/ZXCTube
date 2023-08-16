@@ -188,6 +188,7 @@ section {
     max-height: 200px; /* Задаем высоту 200px для блока .preview */
     display: flex; /* Используем flex для выравнивания содержимого внутри .preview */
     margin-bottom: 10px;
+    position: relative;
 }
 
 .preview a {
@@ -195,11 +196,18 @@ section {
     width: 100%; /* Задаем ширину 100% для ссылки */
 }
 
-.preview img {
+.preview-img {
     width: 100%; /* Задаем ширину 100% для картинки внутри .preview */
     height: 100%; /* Задаем высоту 100% для картинки внутри .preview */
     /*object-fit: contain; !* Применяем object-fit: cover, чтобы картинка заполнила блок и при этом сохраняла пропорции *!*/
     border-radius: 15px;
+}
+
+.btn-delete {
+    display: none;
+    cursor: pointer;
+    position: absolute;
+    right: 5px;
 }
 
 video {

@@ -27,11 +27,16 @@
             <div class="preview">
               <a href="/watch?v={{ video.id }}">
                 {% if video.preview %}
-                  <img src="/api/image/preview/{{ video.preview }}" alt=" ">
+                  <img class="preview-img" src="/api/image/preview/{{ video.preview }}" alt=" ">
                 {% else %}
-                  <img src="{{ data.user.picture }}" alt=" ">
+                  <img class="preview-img" src="{{ data.user.picture }}" alt=" ">
                 {% endif %}
               </a>
+              <div id="delete-video-button" class="btn-delete">
+                <img src="{{ url_for('static', path='/img/crossw.png') }}" alt=" " width="20px" onclick="
+                        fetch('/api/video/{{ video.id }}', {method: 'delete'});
+                ">
+              </div>
             </div>
             <h3>
               <a href="/watch?v={{ video.id }}" title="{{ video.title }}">{{ video.title }}</a>
@@ -71,6 +76,11 @@
                   subscribeButton.textContent = 'Подписаться';
               }
             subscribeButtonBlock.appendChild(subscribeButton);
+          } else {
+              let delVideoButtons = document.querySelectorAll('.btn-delete');
+              for (let i = 0; i < delVideoButtons.length; i++) {
+                  delVideoButtons[i].style.display = 'block';
+              }
           }
         }
 

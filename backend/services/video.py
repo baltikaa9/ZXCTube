@@ -33,6 +33,9 @@ class VideoService:
         else:
             raise HTTPException(status_code=418, detail='Video isn\'t mp4')
 
+        if preview.content_type == 'application/octet-stream':
+            preview = None
+
         if preview:
             if preview.content_type.split('/')[0] != 'image':
                 raise HTTPException(status_code=418, detail='Preview isn\'t image')

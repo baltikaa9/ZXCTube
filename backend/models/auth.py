@@ -1,6 +1,5 @@
 from uuid import UUID
 
-from fastapi_users_db_sqlalchemy import GUID
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 

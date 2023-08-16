@@ -32,7 +32,7 @@
           <input id="upload-video-title" type="text" name="title" placeholder="Название" required>
         </label>
       </div>
-      <div class="video-description">
+      <div class="upload-video-description">
         <label for="upload-video-description">
           <span>Описание</span>
           <input id="upload-video-description" type="text" name="description" placeholder="Расскажите о чем ваше видео">
@@ -47,7 +47,7 @@
       <div class="preview-file">
         <label for="upload-preview-file">
           <span>Выбрать обложку</span>
-          <input id="upload-preview-file" type="file" name="preview" accept="image/png, image/jpeg, image/gif">
+          <input id="upload-preview-file" type="file" name="preview" value="" accept="image/png, image/jpeg, image/gif">
         </label>
       </div>
       <button class="btn btn-dark" type="submit">Загрузить</button>
@@ -82,10 +82,10 @@
     {% block content %} {% endblock %}
   </section>
 
-  {#  <script src="{{ url_for('static', path='/js/bootstrap.bundle.js', _external=True, _scheme='https') }}"></script>
-  <script src="{{ url_for('static', path='/js/script.js', _external=True, _scheme='https') }}"></script> #}
-  <script src="https://zxctube.ru/frontend/static/js/bootstrap.bundle.js"></script>
-  <script src="https://zxctube.ru/frontend/static/js/script.js"></script>
+  <script src="{{ url_for('static', path='/js/bootstrap.bundle.js') }}"></script>
+  <script src="{{ url_for('static', path='/js/script.js') }}"></script>
+{#  <script src="https://zxctube.ru/frontend/static/js/bootstrap.bundle.js"></script>#}
+{#  <script src="https://zxctube.ru/frontend/static/js/script.js"></script>#}
   <script>
     document.addEventListener('DOMContentLoaded', async function() {
         const token = getToken();
