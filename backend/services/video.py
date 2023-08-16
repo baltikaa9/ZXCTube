@@ -7,7 +7,6 @@ from uuid import UUID, uuid4
 import aiofiles
 from fastapi import UploadFile, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.background import BackgroundTasks
 from starlette.requests import Request
 
 from backend.crud import CRUDVideo, CRUDVideoLike
@@ -65,11 +64,19 @@ class VideoService:
         with open(path, 'wb') as file_obj:
             shutil.copyfileobj(file.file, file_obj)
 
-    @staticmethod
-    async def _async_write_file(path: str, file: UploadFile):
+    async def _async_write_file(self, path: str, file: UploadFile):
+        self._create_storage_if_not_exists()
         async with aiofiles.open(path, 'wb') as file_obj:
             data = await file.read()
             await file_obj.write(data)
+
+    @staticmethod
+    def _create_storage_if_not_exists():
+        if not os.path.exists(VIDEO_STORAGE_PATH):
+            os.mkdir(VIDEO_STORAGE_PATH)
+        if not os.path.exists(PREVIEW_STORAGE_PATH):
+            os.mkdir(PREVIEW_STORAGE_PATH)
+
 
     @staticmethod
     async def delete_video(video_id, session: AsyncSession) -> GetVideo | None:
