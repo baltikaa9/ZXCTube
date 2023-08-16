@@ -7,6 +7,20 @@
 {% block content %}
   <div class="container">
     <div class="row">
+      <div class="user-profile">
+        <div class="user-profile-picture">
+          <img class="user-pic" src="{{ data.user.picture }}" alt=" " width="128px">
+        </div>
+        <div class="user-profile-info">
+          <h2 style="margin-bottom: 10px;">{{ data.user.username }}</h2>
+          <p id="subscribers-count"></p>
+          <p id="videos-count"></p>
+        </div>
+        <div id="subscribe-btn-block"></div>
+      </div>
+    </div>
+    <div class="row">
+      <h3 style="margin-top: 50px;">Видео</h3>
       {% for video in data.videos %}
         <div class="col-xl-3 col-md-6 col-sm-12">
           <div class="video">
@@ -28,4 +42,47 @@
     </div>
   </div>
 
+{% endblock %}
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        const token = getToken();
+        if (token) {
+          let subscribeButtonBlock = document.getElementById('subscribe-btn-block');
+          let responseSubscriptions = await interceptorAuth('/api/user/me/subscriptions');
+          responseSubscriptions = await responseSubscriptions.json();
+          let me = responseSubscriptions.user;
+          if (me.id !== '{{ data.user.id }}') {
+              let subscriptions = responseSubscriptions.subscriptions;
+              let user = {
+                  id: '{{ data.user.id }}',
+                  username: '{{ data.user.username }}',
+                  picture: '{{ data.user.picture }}',
+              };
+              let subscribeButton = document.createElement('button')
+              subscribeButton.id = 'subscribe-button';
+              subscribeButton.className = 'btn btn-dark btn-sm btn-subscribe';
+              if (subscriptions.some(subscription => subscription.id === user.id)) {
+                  subscribeButton.onclick = (() => unsubscribe(user.id));
+                  subscribeButton.textContent = 'Отписаться';
+              } else {
+                  subscribeButton.onclick = (() => subscribe(user.id));
+                  subscribeButton.textContent = 'Подписаться';
+              }
+            subscribeButtonBlock.appendChild(subscribeButton);
+          }
+        }
+
+        let subscribersCountBlock = document.getElementById('subscribers-count');
+        let responseSubscribers = await fetch('/api/user/{{ data.user.id }}/subscribers');
+        responseSubscribers = await responseSubscribers.json();
+        subscribersCountBlock.textContent = `${responseSubscribers.subscribers.length} подписчиков`;
+
+        let videosCountBlock = document.getElementById('videos-count');
+        let responseVideos = await fetch('/api/user/{{ data.user.id }}/videos');
+        responseVideos = await responseVideos.json();
+        videosCountBlock.textContent = `${responseVideos.length} видео`;
+    });
+  </script>
 {% endblock %}

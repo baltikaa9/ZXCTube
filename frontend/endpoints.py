@@ -41,7 +41,7 @@ async def watch_video(
         # return RedirectResponse('/video/not_found')
         return RedirectResponse('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
     author = await user_service.get_user(video.user, session)
-    data = Data(video=video, author=author, client_id=GOOGLE_CLIENT_ID)
+    data = Data(video=video, author=author, client_id=GOOGLE_CLIENT_ID, created_at=video.created_at.strftime('%d.%m.%Y'))
     return templates.TemplateResponse(
         'video.html',
         # {'request': request, 'video': video, 'author': author}
@@ -89,6 +89,7 @@ async def get_homepage(
         file=video.file,
         like_count=video.like_count,
         preview=video.preview,
+        created_at=video.created_at,
         user=await user_service.get_user(video.user, session),
     ) for video in videos]
     data = Data(videos=videos, client_id=GOOGLE_CLIENT_ID)

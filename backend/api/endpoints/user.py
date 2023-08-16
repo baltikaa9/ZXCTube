@@ -60,21 +60,21 @@ async def get_my_subscriptions(
 
 @router.get('/{user_id}/subscribers')
 async def get_subscribers(
-        user: UUID,
+        user_id: UUID,
         session: AsyncSession = Depends(get_session),
         service: SubscriptionService = Depends()
 ) -> SubscriberList:
-    subscribers = await service.get_user_subscribers(user, session)
+    subscribers = await service.get_user_subscribers(user_id, session)
     return subscribers
 
 
 @router.get('/{user_id}/subscriptions')
 async def get_subscriptions(
-        user: UUID,
+        user_id: UUID,
         session: AsyncSession = Depends(get_session),
         service: SubscriptionService = Depends()
 ) -> SubscriptionList:
-    subscriptions = await service.get_user_subscriptions(user, session)
+    subscriptions = await service.get_user_subscriptions(user_id, session)
     return subscriptions
 
 

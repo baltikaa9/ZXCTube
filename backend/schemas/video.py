@@ -1,3 +1,4 @@
+import datetime
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -16,6 +17,7 @@ class UploadVideo(BaseModel):
 class GetVideo(UploadVideo):
     id: int
     like_count: int
+    created_at: datetime.datetime
 
     class Config:
         from_attributes = True

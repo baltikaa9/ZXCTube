@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   {% block head %} {% endblock %}
-  {#  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/bootstrap.css', _external=True, _scheme='https') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/fontello.css', _external=True, _scheme='https') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/style.css', _external=True, _scheme='https') }}">
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/img/zxc.ico', _external=True, _scheme='https') }}"> #}
-  <link rel="stylesheet" type="text/css" href="https://zxctube.ru/frontend/static/css/bootstrap.css">
-  <link rel="stylesheet" type="text/css" href="https://zxctube.ru/frontend/static/css/fontello.css">
-  <link rel="stylesheet" type="text/css" href="https://zxctube.ru/frontend/static/css/style.css">
-  <link rel="icon" type="image/x-icon" href="https://zxctube.ru/frontend/static/img/zxc.ico">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/bootstrap.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/fontello.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/style.css') }}">
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/img/zxc.ico') }}">
+{#  <link rel="stylesheet" type="text/css" href="https://zxctube.ru/frontend/static/css/bootstrap.css">#}
+{#  <link rel="stylesheet" type="text/css" href="https://zxctube.ru/frontend/static/css/fontello.css">#}
+{#  <link rel="stylesheet" type="text/css" href="https://zxctube.ru/frontend/static/css/style.css">#}
+{#  <link rel="icon" type="image/x-icon" href="https://zxctube.ru/frontend/static/img/zxc.ico">#}
 </head>
 <body>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -40,8 +40,14 @@
       </div>
       <div class="video-file">
         <label for="upload-video-file">
-          <span>Выбрать файл</span>
-          <input id="upload-video-file" type="file" name="file" accept="video/mp4">
+          <span>Выбрать видео</span>
+          <input id="upload-video-file" type="file" name="file" accept="video/mp4" required>
+        </label>
+      </div>
+      <div class="preview-file">
+        <label for="upload-preview-file">
+          <span>Выбрать обложку</span>
+          <input id="upload-preview-file" type="file" name="preview" accept="image/png, image/jpeg, image/gif">
         </label>
       </div>
       <button class="btn btn-dark" type="submit">Загрузить</button>
