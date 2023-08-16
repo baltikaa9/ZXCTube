@@ -16,8 +16,9 @@ class VideoDB(Base):
     description: Mapped[str] = mapped_column(nullable=True)
     file: Mapped[str] = mapped_column(nullable=False)
     create_at: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.now())
-    user: Mapped[UUID] = mapped_column(ForeignKey(UserDB.id, ondelete='restrict'))
+    user: Mapped[UUID] = mapped_column(ForeignKey(UserDB.id))
     like_count: Mapped[int] = mapped_column(default=0)
+    preview: Mapped[str] = mapped_column(nullable=True)
 
 
 class VideoLikeDB(Base):

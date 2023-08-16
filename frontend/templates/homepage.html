@@ -11,7 +11,13 @@
         <div class="col-xl-3 col-md-6 col-sm-12">
           <div class="video">
             <div class="preview">
-              <a href="/watch?v={{ video.id }}"> <img src="{{ video.user.picture }}" alt=" "> </a>
+              <a href="/watch?v={{ video.id }}">
+                {% if video.preview %}
+                  <img src="/api/image/preview/{{ video.preview }}" alt=" ">
+                {% else %}
+                  <img src="{{ video.user.picture }}" alt=" ">
+                {% endif %}
+              </a>
             </div>
             <h3><a href="/{{ video.user.id }}" title="{{ video.user.username }}"><img class="user-pic" src="{{ video.user.picture }}" alt=" " width="30px"></a>
               <a href="/watch?v={{ video.id }}" title="{{ video.title }}">{{ video.title }}</a>

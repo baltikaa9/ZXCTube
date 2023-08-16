@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+VIDEO_STORAGE_PATH = 'data/media'
+PREVIEW_STORAGE_PATH = 'data/preview'
+
 DB_URL = os.getenv('DB_URL')
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 

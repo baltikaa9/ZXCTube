@@ -88,6 +88,7 @@ async def get_homepage(
         description=video.description,
         file=video.file,
         like_count=video.like_count,
+        preview=video.preview,
         user=await user_service.get_user(video.user, session),
     ) for video in videos]
     data = Data(videos=videos, client_id=GOOGLE_CLIENT_ID)

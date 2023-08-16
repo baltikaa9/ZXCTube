@@ -14,6 +14,7 @@ from backend.crud import CRUDVideo, CRUDVideoLike
 from backend.exceptions import VideoNotFoundException
 from backend.models import UserDB, VideoDB, VideoLikeDB
 from backend.schemas import UploadVideo, GetVideo, CreateLikeOnVideo
+from config import VIDEO_STORAGE_PATH, PREVIEW_STORAGE_PATH
 
 
 class VideoService:
@@ -23,35 +24,52 @@ class VideoService:
             file: UploadFile,
             title: str,
             description: str | None,
-            background_tasks: BackgroundTasks,
+            preview: UploadFile | None,
             session: AsyncSession
     ) -> GetVideo:
-        file_name = self._generate_file_name(user.id, file.content_type.split("/")[1])
+        video_path = self._generate_video_path(user.id, file.content_type.split("/")[1])
+        preview_path = None
         if file.content_type == 'video/mp4':
-            # background_tasks.add_task(write_video, path=file_name, video=file)
-            await self._async_write_video(file_name, file)
+            await self._async_write_file(video_path, file)
         else:
-            raise HTTPException(status_code=418, detail='It isn\'t mp4')
+            raise HTTPException(status_code=418, detail='Video isn\'t mp4')
 
-        video = UploadVideo(title=title, description=description, file=file_name, user=user.id)
+        if preview:
+            if preview.content_type.split('/')[0] != 'image':
+                raise HTTPException(status_code=418, detail='Preview isn\'t image')
+            else:
+                preview_path = self._generate_preview_path(preview.filename)
+                await self._async_write_file(preview_path, preview)
+
+        video = UploadVideo(
+            title=title,
+            description=description,
+            file=video_path,
+            user=user.id,
+            preview=preview_path.split('/')[-1] if preview else None,
+        )
         crud_video = CRUDVideo(VideoDB, session)
         video = await crud_video.create(video)
         return GetVideo.model_validate(video)
 
     @staticmethod
-    def _generate_file_name(user_id: UUID, file_format: str):
-        return f'data/media/{user_id}_{uuid4()}.{file_format}'
+    def _generate_video_path(user_id: UUID, file_format: str):
+        return f'{VIDEO_STORAGE_PATH}/{user_id}_{uuid4()}.{file_format}'
 
     @staticmethod
-    def _write_video(path: str, video: UploadFile):
-        with open(path, 'wb') as file:
-            shutil.copyfileobj(video.file, file)
+    def _generate_preview_path(file_name: str):
+        return f'{PREVIEW_STORAGE_PATH}/{uuid4()}_{file_name}'
 
     @staticmethod
-    async def _async_write_video(path: str, video: UploadFile):
-        async with aiofiles.open(path, 'wb') as file:
-            data = await video.read()
-            await file.write(data)
+    def _write_file(path: str, file: UploadFile):
+        with open(path, 'wb') as file_obj:
+            shutil.copyfileobj(file.file, file_obj)
+
+    @staticmethod
+    async def _async_write_file(path: str, file: UploadFile):
+        async with aiofiles.open(path, 'wb') as file_obj:
+            data = await file.read()
+            await file_obj.write(data)
 
     @staticmethod
     async def delete_video(video_id, session: AsyncSession) -> GetVideo | None:

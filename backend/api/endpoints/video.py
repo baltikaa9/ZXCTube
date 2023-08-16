@@ -17,15 +17,15 @@ router = APIRouter(prefix='/video', tags=['Video'])
 
 @router.post('/')
 async def create_video(
-        background_tasks: BackgroundTasks,
         title: Annotated[str, Form()],
         file: Annotated[UploadFile, File()],
         description: Annotated[str | None, Form()] = None,
+        preview: Annotated[UploadFile | None, File()] = None,
         session: AsyncSession = Depends(get_session),
         current_user: UserDB = Depends(get_current_user),
         service: VideoService = Depends()
 ) -> GetVideo:
-    video = await service.save_video(current_user, file, title, description, background_tasks, session)
+    video = await service.save_video(current_user, file, title, description, preview, session)
     return video
 
 

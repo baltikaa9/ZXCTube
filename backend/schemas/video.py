@@ -10,6 +10,7 @@ class UploadVideo(BaseModel):
     description: str | None
     file: str
     user: UUID
+    preview: str | None
 
 
 class GetVideo(UploadVideo):
