@@ -1,18 +1,48 @@
 version: "3.7"
 services:
+  db:
+    container_name: "zxctube_db"
+    image: postgres:15.3-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=zxctube
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  alembic_migrations:
+    container_name: "zxctube_alembic"
+    image: zxctube_alembic
+    environment:
+      ALEMBIC_DATABASE_URL: "postgresql://postgres:postgres@db/zxctube"
+      DB_URL: "postgresql+asyncpg://postgres:postgres@db/zxctube"
+    build:
+      context: .
+      dockerfile: alembic.dockerfile
+    command: ./alembic_upgrade.sh
+    depends_on:
+      - db
+
   app:
     container_name: "zxctube_app"
     image: zxctube
     environment:
       HOST: "0.0.0.0"
+      DB_URL: "postgresql+asyncpg://postgres:postgres@db/zxctube"
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: app.dockerfile
     ports:
       - "8000:8000"
     volumes:
       - data:/data
+    depends_on:
+      - alembic_migrations
 
 volumes:
   data:
+  db-data:
 

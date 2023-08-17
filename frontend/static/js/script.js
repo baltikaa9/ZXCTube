@@ -7,7 +7,7 @@ function login (googleResponse) {
         .then(response => response.json())
         .then(token => {
             saveToken(token.access_token);
-            document.cookie = `refresh_token=${token.refresh_token}`
+            document.cookie = `refresh_token=${token.refresh_token}; max-age=${3600 * 24 * 90}`
             localStorage.setItem('session', token.session_id)
         });
 

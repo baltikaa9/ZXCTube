@@ -61,11 +61,11 @@ def run_migrations_online() -> None:
 
     """
     config_section = config.get_section(config.config_ini_section)
-    config_section["sqlalchemy.url"] = url
+    config_section["sqlalchemy.url"] = url  # подставляем url в 'sqlalchemy.url'
 
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
+        config_section,
+        prefix='sqlalchemy.',
         poolclass=pool.NullPool,
     )
 

@@ -2,7 +2,7 @@
 README.md
 CHANGELOG.md
 docker-compose.yml
-Dockerfile
+app.dockerfile
 venv
 LICENSE
 
