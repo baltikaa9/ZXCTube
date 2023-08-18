@@ -1,15 +1,13 @@
-function login (googleResponse) {
+async function login (googleResponse) {
     console.log(googleResponse.credential);
-    fetch('/api/auth/login', {
+    let response = await fetch('/api/auth/login', {
       method: 'post',
       body: googleResponse.credential
     })
-        .then(response => response.json())
-        .then(token => {
-            saveToken(token.access_token);
-            document.cookie = `refresh_token=${token.refresh_token}; max-age=${3600 * 24 * 90}`
-            localStorage.setItem('session', token.session_id)
-        });
+    let token = await response.json();
+    saveToken(token.access_token);
+    document.cookie = `refresh_token=${token.refresh_token}; max-age=${3600 * 24 * 90}`;
+    localStorage.setItem('session', token.session_id);
 
     window.location.reload();
 }
