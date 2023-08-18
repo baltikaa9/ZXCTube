@@ -10,6 +10,4 @@ WORKDIR .
 
 RUN python3 -m pip install alembic psycopg2-binary asyncpg python-dotenv
 
-#RUN sleep 10
-#
-#CMD ["alembic", "upgrade", "head"]
+RUN ["chmod", "+x", "./alembic_upgrade.sh"]
