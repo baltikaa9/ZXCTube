@@ -9,19 +9,19 @@
 {% block content %}
   <div class="container">
     <div class="row">
-        <video
-          id="my-video"
-          class="video-js vjs-16-9"
-          controls
-          preload="auto"
-          data-setup="{}"
-        >
-          <source src="/api/video/{{ data.video.id }}" type="video/mp4">
-        </video>
+      <video
+        id="my-video"
+        class="video-js vjs-16-9"
+        controls
+        preload="auto"
+        data-setup="{}"
+      >
+        <source src="/api/video/{{ data.video.id }}" type="video/mp4">
+      </video>
     </div>
 
     <div class="row">
-      <div class="col-6">
+      <div class="col-12">
         <h1>{{ data.video.title }}</h1>
       </div>
 
@@ -35,9 +35,11 @@
           </a>
         </div>
         <div class="video-author-info">
-          <a href="/{{ data.author.id }}" title="{{ data.author.username }}">
-            <h6>{{ data.author.username }}</h6>
-          </a>
+          <h6>
+            <a href="/{{ data.author.id }}" title="{{ data.author.username }}">
+              {{ data.author.username }}
+            </a>
+          </h6>
           <p id="subscribers-count"></p>
         </div>
         <div id="subscribe-btn-block"></div>

@@ -240,10 +240,18 @@ video {
 
 
 /* video author */
-.video-author{
+.video-author {
     display: grid;
-    grid-template-columns: 50px 200px 1fr 2fr;
+    grid-template-columns: 50px 150px 1fr 2fr;
     max-height: 40px;
+}
+
+@media (max-width: 400px) {
+    .video-author {
+        display: grid;
+        grid-template-columns: 50px 100px 1fr 2fr;
+        max-height: 40px;
+    }
 }
 
 .video-author-info * {
