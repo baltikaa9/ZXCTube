@@ -3,16 +3,13 @@
 ## About
 A small video hosting.
 
-[//]: # (Technology stack: FastAPI, postgresql, alembic, sqlalchemy, docker, nginx, bootstrap)
-
-[//]: # ([API documentation]&#40;https://zxctube.ru/docs&#41;)
-
 ## Features
 - Registration and authorization of users using [Google OAuth 2.0](https://developers.google.com/identity/protocols/oauth2?hl=ru)
 - Upload and delete videos
 - Viewing videos
 - Subscriptions to other users
 - Likes to videos 
+- [API documentation](https://zxctube.ru/docs)
 
 ## Built With
 ![](https://img.shields.io/badge/python-3.11-blue)
