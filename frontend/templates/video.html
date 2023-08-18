@@ -9,19 +9,15 @@
 {% block content %}
   <div class="container">
     <div class="row">
-      <div class="col-12">
         <video
           id="my-video"
-          class="video-js"
+          class="video-js vjs-16-9"
           controls
           preload="auto"
-          width="1280"
-          height="720"
           data-setup="{}"
         >
           <source src="/api/video/{{ data.video.id }}" type="video/mp4">
         </video>
-      </div>
     </div>
 
     <div class="row">
@@ -52,7 +48,7 @@
       </div>
     </div>
 
-    <div class="row" style="margin-top: 15px;">
+    <div class="row" style="margin-top: 15px; padding: 0 11.250px">
       <div class="video-description">
         <p class="create-date">{{ data.created_at }}</p>
         {% if data.video.description %}
