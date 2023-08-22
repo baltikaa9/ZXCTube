@@ -41,7 +41,6 @@ async def refresh(
 @router.post('/logout', dependencies=[Depends(get_current_user)])
 async def logout(
         session_id: int,
-        # current_user: UserDB = ,
         session: AsyncSession = Depends(get_session),
         service: AuthService = Depends(),
 ) -> dict:

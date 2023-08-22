@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends
+from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.dependencies import get_session, get_current_user
@@ -30,6 +31,7 @@ async def get_my_videos(
 
 
 @router.get('/{user_id}/videos')
+@cache(expire=30)
 async def get_user_videos(
         user_id: UUID,
         session: AsyncSession = Depends(get_session),
@@ -59,6 +61,7 @@ async def get_my_subscriptions(
 
 
 @router.get('/{user_id}/subscribers')
+@cache(expire=30)
 async def get_subscribers(
         user_id: UUID,
         session: AsyncSession = Depends(get_session),
@@ -69,6 +72,7 @@ async def get_subscribers(
 
 
 @router.get('/{user_id}/subscriptions')
+@cache(expire=30)
 async def get_subscriptions(
         user_id: UUID,
         session: AsyncSession = Depends(get_session),
@@ -76,17 +80,6 @@ async def get_subscriptions(
 ) -> SubscriptionList:
     subscriptions = await service.get_user_subscriptions(user_id, session)
     return subscriptions
-
-
-# router.include_router(
-#     _fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
-# )
-#
-# router.include_router(
-#     _fastapi_users.get_register_router(UserRead, UserCreate),
-#     prefix="/auth",
-#     tags=["auth"],
-# )
 
 
 @router.delete('/{user_id}', dependencies=[Depends(get_current_user)])
@@ -99,21 +92,3 @@ async def delete_user(
     if not user:
         raise UserNotFoundException()
     return user
-
-# router.include_router(
-#     fastapi_users.get_reset_password_router(),
-#     prefix="/auth",
-#     tags=["auth"],
-# )
-#
-# router.include_router(
-#     fastapi_users.get_verify_router(UserRead),
-#     prefix="/auth",
-#     tags=["auth"],
-# )
-#
-# router.include_router(
-#     fastapi_users.get_users_router(UserRead, UserUpdate),
-#     prefix="/users",
-#     tags=["users"],
-# )
