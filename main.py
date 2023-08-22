@@ -4,11 +4,11 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from backend import api_router
-from config import HOST
+from config import HOST, SENTRY_URL
 from frontend import fr_router
 
 sentry_sdk.init(
-    dsn='https://857a65a61d271a75c69f6934a0e9bf16@o4505749463105536.ingest.sentry.io/4505749549744128',
+    dsn=SENTRY_URL,
     traces_sample_rate=1.0,
 )
 

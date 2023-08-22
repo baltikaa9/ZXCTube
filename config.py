@@ -8,6 +8,7 @@ VIDEO_STORAGE_PATH = 'data/media'
 PREVIEW_STORAGE_PATH = 'data/preview'
 
 DB_URL = os.getenv('DB_URL')
+SENTRY_URL = os.getenv('SENTRY_URL')
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
