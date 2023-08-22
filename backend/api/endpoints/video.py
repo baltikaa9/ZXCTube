@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, UploadFile, Form, File, Depends, BackgroundTasks, Request
+from fastapi import APIRouter, UploadFile, Form, File, Depends, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 

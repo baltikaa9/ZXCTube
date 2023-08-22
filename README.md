@@ -19,6 +19,7 @@ A small video hosting.
 ![](https://img.shields.io/badge/asyncpg-0.28.0-blue)
 ![](https://img.shields.io/badge/pydantic-2.1.1-blue)
 ![](https://img.shields.io/badge/google_auth-2.22.0-blue)
+![](https://img.shields.io/badge/sentry-1.29.2-blue)
 ![](https://img.shields.io/badge/bootstrap-5-blue)
 
 
