@@ -14,6 +14,7 @@ from backend.exceptions import VideoNotFoundException
 from backend.models import UserDB, VideoDB, VideoLikeDB
 from backend.schemas import UploadVideo, GetVideo, CreateLikeOnVideo
 from config import VIDEO_STORAGE_PATH, PREVIEW_STORAGE_PATH
+from backend.services.celery_tasks import _delete_video_file
 
 
 class VideoService:
@@ -80,14 +81,11 @@ class VideoService:
         if not os.path.exists(PREVIEW_STORAGE_PATH):
             os.mkdir(PREVIEW_STORAGE_PATH)
 
-
-    @staticmethod
-    async def delete_video(video_id, session: AsyncSession) -> GetVideo | None:
+    async def delete_video(self, video_id, session: AsyncSession) -> GetVideo | None:
         crud_video = CRUDVideo(VideoDB, session)
         video = await crud_video.delete(video_id)
         if video:
-            file_name = video.file
-            os.remove(file_name)
+            _delete_video_file.apply_async(video.file, countdown=15 * 60)
             return GetVideo.model_validate(video)
 
     @staticmethod
@@ -181,3 +179,8 @@ class VideoService:
                 raise VideoNotFoundException()
             await crud_like.create(like)
         return GetVideo.model_validate(video)
+
+
+# @celery.task
+# def _delete_video_file(file_name: str) -> None:
+#     os.remove(file_name)

@@ -7,7 +7,7 @@ from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 
 from backend import api_router
-from config import HOST, SENTRY_URL
+from config import HOST, SENTRY_URL, REDIS_URL
 from frontend import fr_router
 
 sentry_sdk.init(
@@ -25,8 +25,8 @@ app.mount('/frontend/static', StaticFiles(directory='frontend/static'), name='st
 
 @app.on_event("startup")
 async def startup():
-    redis = aioredis.from_url("redis://localhost")
-    FastAPICache.init(RedisBackend(redis), prefix="zxctube-cache")
+    redis = aioredis.from_url(REDIS_URL)
+    FastAPICache.init(RedisBackend(redis), prefix='zxctube-cache')
 
 
 if __name__ == '__main__':
