@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=zxctube
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
 
@@ -50,7 +50,7 @@ services:
     image: redis:7.2.0-alpine
     restart: always
     ports:
-      - "6378:6379"
+      - "6379:6379"
 
   celery:
     container_name: "zxctube_celery"
