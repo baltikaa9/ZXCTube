@@ -32,7 +32,7 @@ services:
       HOST: "0.0.0.0"
       DB_URL: "postgresql+asyncpg://postgres:postgres@db/zxctube"
       REDIS_URL: "redis://redis"
-      LOCAL: false
+      LOCAL: 'false'
     build:
       context: .
       dockerfile: app.dockerfile
