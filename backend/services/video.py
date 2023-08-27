@@ -85,7 +85,7 @@ class VideoService:
         crud_video = CRUDVideo(VideoDB, session)
         video = await crud_video.delete(video_id)
         if video:
-            _delete_video_file.apply_async(video.file, countdown=15 * 60)
+            _delete_video_file.apply_async(args=(video.file,), countdown=6)
             return GetVideo.model_validate(video)
 
     @staticmethod

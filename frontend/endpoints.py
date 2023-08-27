@@ -11,7 +11,7 @@ from backend.api.dependencies import get_session
 from backend.exceptions import UserNotFoundException
 from backend.schemas import GetVideoForHTML
 from backend.services import VideoService, UserService
-from config import GOOGLE_CLIENT_ID
+from config import GOOGLE_CLIENT_ID, LOCAL
 
 router = APIRouter(tags=['Frontend'])
 
@@ -41,7 +41,7 @@ async def watch_video(
         # return RedirectResponse('/video/not_found')
         return RedirectResponse('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
     author = await user_service.get_user(video.user, session)
-    data = Data(video=video, author=author, client_id=GOOGLE_CLIENT_ID, created_at=video.created_at.strftime('%d.%m.%Y'))
+    data = Data(video=video, author=author, client_id=GOOGLE_CLIENT_ID, created_at=video.created_at.strftime('%d.%m.%Y'), local=LOCAL)
     return templates.TemplateResponse(
         'video.html',
         # {'request': request, 'video': video, 'author': author}
@@ -66,7 +66,7 @@ async def get_user(
     if not user:
         raise UserNotFoundException()
     videos = await video_service.get_videos_by_user(user_id, session)
-    data = Data(videos=videos, user=user, client_id=GOOGLE_CLIENT_ID)
+    data = Data(videos=videos, user=user, client_id=GOOGLE_CLIENT_ID, local=LOCAL)
     return templates.TemplateResponse(
         'user.html',
         # {'request': request, 'user': user, 'videos': videos}
@@ -92,7 +92,7 @@ async def get_homepage(
         created_at=video.created_at,
         user=await user_service.get_user(video.user, session),
     ) for video in videos]
-    data = Data(videos=videos, client_id=GOOGLE_CLIENT_ID)
+    data = Data(videos=videos, client_id=GOOGLE_CLIENT_ID, local=LOCAL)
     return templates.TemplateResponse(
         'homepage.html',
         # {'request': request, 'videos': videos}

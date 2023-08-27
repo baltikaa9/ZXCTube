@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=zxctube
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
 
@@ -22,7 +22,6 @@ services:
     build:
       context: .
       dockerfile: alembic.dockerfile
-    command: ./alembic_upgrade.sh
     depends_on:
       - db
 
@@ -32,6 +31,8 @@ services:
     environment:
       HOST: "0.0.0.0"
       DB_URL: "postgresql+asyncpg://postgres:postgres@db/zxctube"
+      REDIS_URL: "redis://redis"
+      LOCAL: false
     build:
       context: .
       dockerfile: app.dockerfile
@@ -41,6 +42,41 @@ services:
       - data:/data
     depends_on:
       - alembic_migrations
+#      - db
+      - redis
+
+  redis:
+    container_name: "zxctube_redis"
+    image: redis:7.2.0-alpine
+    restart: always
+    ports:
+      - "6378:6379"
+
+  celery:
+    container_name: "zxctube_celery"
+    image: zxctube_celery
+    environment:
+      REDIS_URL: "redis://redis"
+    build:
+      context: .
+      dockerfile: celery.dockerfile
+    volumes:
+      - data:/data
+    depends_on:
+      - redis
+
+  flower:
+    container_name: "zxctube_flower"
+    image: zxctube_flower
+    environment:
+      REDIS_URL: "redis://redis"
+    build:
+      context: .
+      dockerfile: flower.dockerfile
+    ports:
+      - "5555:5555"
+    depends_on:
+      - celery
 
 volumes:
   data:

@@ -19,3 +19,4 @@ ALGORITHM = os.getenv('ALGORITHM')
 ACCESS_TOKEN_JWT_SUBJECT = os.getenv('ACCESS_TOKEN_JWT_SUBJECT')
 
 HOST = os.getenv('HOST', default='127.0.0.1')
+LOCAL = False if os.getenv('LOCAL', 'false').lower() == 'false' else True
