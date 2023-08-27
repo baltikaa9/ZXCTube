@@ -41,6 +41,9 @@ A small video hosting.
    SECRET_KEY=<your_secret_key_to_create_access_token>
    ALGORITHM=HS256
    ACCESS_TOKEN_JWT_SUBJECT=access
+   SENTRY_URL=<your_sentry_url>
+   REDIS_URL=redis://localhost:6379
+   LOCAL=True
     ```
 
 ### Run docker compose
