@@ -79,10 +79,3 @@ A small video hosting.
     ```bat
    uvicorn main:app --reload
    ```
-   
-## Database connection
-- Host: `localhost`
-- Port: `5432`
-- User: `postgres`
-- Password: `postgres`
-- Database: `zxctube`
